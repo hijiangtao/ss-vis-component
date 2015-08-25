@@ -2708,7 +2708,7 @@ var demo = new Vue({
         var parseDate = d3.time.format("%H:%M").parse;
 
         var legendSize = 10,
-            legendColor = {'in': '#FFC900', 'out': '#2A17B1', 'remain': '#41DB00'};
+            legendColor = {'in': 'rgba(0, 160, 233, .8)', 'out': 'rgba(0, 160, 233, .2)', 'remain': '#41DB00'};
 
         var x = d3.time.scale()
             .range([0, width]);
@@ -3123,7 +3123,7 @@ var demo = new Vue({
             return '.55em';
           }
         })
-        .text(function(d) { 
+        .text(function(d) {
           return d; 
         });
 
