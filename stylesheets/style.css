@@ -139,6 +139,12 @@ body {
     opacity: 0;
 }
 
+.tipNetPoints {
+    stroke: white;
+    stroke-width: 2px;
+    opacity: 0;
+}
+
 .tipDot {
     stroke: black;
     stroke-width: 0.5px;

@@ -970,10 +970,10 @@ var demo = new Vue({
           .enter().append("g")
           .attr("class", "seriesPoints");
 
-        points.selectAll(".tipPoints")
+        points.selectAll(".tipNetPoints")
           .data(function (d) { return d['values']; })
           .enter().append("circle")
-          .attr("class", "tipPoints")
+          .attr("class", "tipNetPoints")
           .attr("cx", function (d) { return x(d['time']); })
           .attr("cy", function (d) { return y(d['num']); })
           .text(function (d) { return d['num']; })
@@ -986,7 +986,7 @@ var demo = new Vue({
 
             d3.select(this).transition().duration(100).style("opacity", 1);
 
-            var ret = $('circle').filter(function(index) {
+            var ret = $('.tipNetPoints').filter(function(index) {
               return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
             });
 
@@ -1057,7 +1057,7 @@ var demo = new Vue({
 
             d3.select(this).transition().duration(100).style("opacity", 0);
 
-            var ret = $('circle').filter(function(index) {
+            var ret = $('.tipNetPoints').filter(function(index) {
               return ($(this)[0]['cx']['animVal']['value'] === currentX);
             });
 
@@ -1144,9 +1144,9 @@ var demo = new Vue({
 
         //circle updating
 
-        points.selectAll(".tipPoints")
+        points.selectAll(".tipNetPoints")
           .data(function (d) { return d['values']; })
-          .attr("class", "tipPoints")
+          .attr("class", "tipNetPoints")
           .attr("cx", function (d) { return x(d['time']); })
           .attr("cy", function (d) { return y(d['num']); })
           .attr("r", "6px")
@@ -1157,12 +1157,12 @@ var demo = new Vue({
         // console.log(ddata);
         points.data(ddata);
 
-        points.selectAll(".tipPoints")
+        points.selectAll(".tipNetPoints")
           .data(function (d) {
             return d['values'];
           })
           .enter().append("circle")
-          .attr("class", "tipPoints")
+          .attr("class", "tipNetPoints")
           .attr("cx", function (d) { return x(d['time']); })
           .attr("cy", function (d) { return y(d['num']); })
           .text(function (d) { return d['num']; })
@@ -1175,7 +1175,7 @@ var demo = new Vue({
 
             d3.select(this).transition().duration(100).style("opacity", 1);
 
-            var ret = $('circle').filter(function(index) {
+            var ret = $('.tipNetPoints').filter(function(index) {
               return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
             });
 
@@ -1242,7 +1242,7 @@ var demo = new Vue({
 
             d3.select(this).transition().duration(100).style("opacity", 0);
 
-            var ret = $('circle').filter(function(index) {
+            var ret = $('.tipNetPoints').filter(function(index) {
               return ($(this)[0]['cx']['animVal']['value'] === currentX);
             });
 
@@ -1260,7 +1260,7 @@ var demo = new Vue({
           });
 
         //remove old dot
-        points.selectAll("circle")
+        points.selectAll(".tipNetPoints")
           .data(function (d) { return d['values']; })
           .exit()
           .transition()
