@@ -3,7 +3,7 @@ var timeStep = (1/60);
 var confettiCount = 150000;
 
 var container;
-var camera, scene, renderer;
+var camera, scene, renderer, stats;
 var controls;
 
 var shaderUniforms, shaderAttributes, confettiMaterial;
