@@ -12,6 +12,16 @@
             padding: 0;
         }
 
+        nav {
+            position:absolute;
+            bottom: 0px;
+            right: 0px;
+        }
+        nav button {
+            fill: white;
+            color: black;
+        }
+
         body {
             width: 100vw;
             height: 100vh;
@@ -156,35 +166,6 @@
             font-size: 17px;
         }
 
-        nav {
-            padding: 20px;
-            width: 300px;
-            height: 100vh;
-            position: absolute;
-            right: 0px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-content: flex-start;
-            overflow: auto;
-            background: #222;
-            box-sizing: border-box;
-            transform: translateX(267px);
-            transition: transform 0.2s ease-in-out;
-        }
-        nav:hover { transform: translateX(0px); }
-
-        nav + label {
-            top: calc(50% - 0.7em);
-            right: -1px;
-            font-size: 90px;
-            pointer-events: none;
-            transition: transform 0.35s ease-out;
-        }
-        nav:hover + label {
-            transform: translate(-330px, 12px) rotate(180deg);
-        }
-
         button {
             margin: 10px 5px;
             padding: 5px 10px;
@@ -270,9 +251,9 @@
                 <button onmousedown="select(this)">Rotate</button>
                 <button onmousedown="select(this)">Zoom</button>
                 <button onmousedown="resetViewport()">Reset viewport</button>
-                <section id="menu">Your menu</section>
+                <!--<section id="menu">Your menu</section>-->
             </nav>
-            <label>‹</label>
+            <!--<label>‹</label>-->
 
         </main>
     </div>
