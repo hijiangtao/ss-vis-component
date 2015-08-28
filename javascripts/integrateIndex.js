@@ -88,124 +88,125 @@ var demo = new Vue({
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         svg.append("g")
-          .attr("class", "x axis")
-          .attr("id", "mem-x-axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
+            .attr("class", "x axis")
+            .attr("id", "mem-x-axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
         svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
+            .attr("class", "y axis")
+            .call(yAxis);
 
         var path = svg.append("svg:path")
-          .datum(ddata)
-          .attr("class", "areaM")
-          .attr("d", area);
+            .datum(ddata)
+            .attr("class", "areaM")
+            .attr("d", area);
 
         var points = svg.selectAll(".gPoints")
-          .data(ddata)
-          .enter().append("g")
-          .attr("class", "gPoints");
+            .data(ddata)
+            .enter().append("g")
+            .attr("class", "gPoints");
 
         //legend rendering
         var legend = svg.append('g')
-          .attr('class', 'legend')
-          .attr('transform', 'translate(0,'+ (height + margin.bottom - legendSize * 1.2) +')');
+            .attr('class', 'legend')
+            .attr('transform', 'translate(0,'+ (height + margin.bottom - legendSize * 1.2) +')');
 
         legend.append('rect')
-          .attr('width', legendSize)
-          .attr('height', legendSize)                                   
-          .style('fill', legendColor);
-          
+            .attr('width', legendSize)
+            .attr('height', legendSize)
+            .style('fill', legendColor);
+
         legend.append('text')
-          .data(ddata)
-          .attr('x', legendSize*1.2)
-          .attr('y', legendSize/1.1)
-          .text('used');
+            .data(ddata)
+            .attr('x', legendSize*1.2)
+            .attr('y', legendSize/1.1)
+            .text('used');
 
         points.selectAll(".memtipPoints")
-          .data(ddata)
-          .enter().append("circle")
-          .attr("class", "memtipPoints")
-          .attr("cx", function (d) { 
-            return x(d.time); 
-          })
-          .attr("cy", function (d) {
-            return y(d['used']/d['total']); 
-          })
-          .attr("r", "6px")
-          .on("mouseover", function (d) {
-            console.log(this);
-
-            d3.select(this).transition().duration(100).style("opacity", 1);
-
-            svg.append("g")
-              .append("line")
-              .attr("class", "tipDot")
-              .transition()
-              .duration(50)
-              .attr("x1", x(d['time']))
-              .attr("x2", x(d['time']))
-              .attr("y2", height);
-
-            // svg.append("circle")
-            //   .attr('class', 'tipDot')
-            //   .attr("cx", x(d['time']))
-            //   .attr("cy", y(0))
-            //   .attr("r", "4px");
-
-            // svg.append("circle")
-            //   .attr('class', 'tipDot')
-            //   .attr("cx", x(d['time']))
-            //   .attr("cy", y(1))
-            //   .attr("r", "4px");
-
-            svg.append("polyline")      // attach a polyline
-              .attr("class", "tipDot")  // colour the line
-              .style("fill", "black")     // remove any fill colour
-              .attr("points", (x(d['time'])-3.5)+","+(y(1)-2.5)+","+x(d['time'])+","+(y(1)+6)+","+(x(d['time'])+3.5)+","+(y(1)-2.5));
-
-            svg.append("polyline")      // attach a polyline
-              .attr("class", "tipDot")  // colour the line
-              .style("fill", "black")     // remove any fill colour
-              .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
-
-            $(this).tooltip({
-              'container': 'body',
-              'placement': 'left',
-              'title': 'Used' + ' | ' + formatPercent(d['used']/d['total']),
-              'trigger': 'hover'
+            .data(ddata)
+            .enter().append("circle")
+            .attr("class", "memtipPoints")
+            .attr("cx", function (d) {
+              return x(d.time);
             })
-            .tooltip('show');
-          })
-          .on("mouseout",  function (d) { 
-            d3.select(this).transition().duration(100).style("opacity", 0);
+            .attr("cy", function (d) {
+              return y(d['used']/d['total']);
+            })
+            .attr("r", "6px")
+            .on("mouseover", function (d) {
+              console.log(this);
 
-            d3.selectAll('.tipDot').transition().duration(100).remove();
+              d3.select(this).transition().duration(100).style("opacity", 1);
 
-            $(this).tooltip('destroy');
-          });
+              svg.append("g")
+                  .attr("class", "tipDot")
+                  .append("line")
+                  .attr("class", "tipDot")
+                  .transition()
+                  .duration(50)
+                  .attr("x1", x(d['time']))
+                  .attr("x2", x(d['time']))
+                  .attr("y2", height);
 
-          this.getOpt = function() {
-            var axisOpt = new Object();
-            axisOpt['x'] = x;
-            axisOpt['y'] = y;
-            axisOpt['xAxis'] = xAxis;
-            axisOpt['width'] = width;
-            axisOpt['height'] = height;
+              // svg.append("circle")
+              //   .attr('class', 'tipDot')
+              //   .attr("cx", x(d['time']))
+              //   .attr("cy", y(0))
+              //   .attr("r", "4px");
 
-            return axisOpt;
-          }
+              // svg.append("circle")
+              //   .attr('class', 'tipDot')
+              //   .attr("cx", x(d['time']))
+              //   .attr("cy", y(1))
+              //   .attr("r", "4px");
 
-          this.getSvg = function() {
-            var svgD = new Object();
-            svgD['svg'] = svg;
-            svgD['points'] = points;
-            svgD['area'] = area;
-            svgD['path'] = path;
+              svg.append("polyline")      // attach a polyline
+                  .attr("class", "tipDot")  // colour the line
+                  .style("fill", "black")     // remove any fill colour
+                  .attr("points", (x(d['time'])-3.5)+","+(y(1)-2.5)+","+x(d['time'])+","+(y(1)+6)+","+(x(d['time'])+3.5)+","+(y(1)-2.5));
 
-            return svgD;
-          }
+              svg.append("polyline")      // attach a polyline
+                  .attr("class", "tipDot")  // colour the line
+                  .style("fill", "black")     // remove any fill colour
+                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
+
+              $(this).tooltip({
+                'container': 'body',
+                'placement': 'left',
+                'title': 'Used' + ' | ' + formatPercent(d['used']/d['total']),
+                'trigger': 'hover'
+              })
+                  .tooltip('show');
+            })
+            .on("mouseout",  function (d) {
+              d3.select(this).transition().duration(100).style("opacity", 0);
+
+              d3.selectAll('.tipDot').transition().duration(100).remove();
+
+              $(this).tooltip('destroy');
+            });
+
+        this.getOpt = function() {
+          var axisOpt = new Object();
+          axisOpt['x'] = x;
+          axisOpt['y'] = y;
+          axisOpt['xAxis'] = xAxis;
+          axisOpt['width'] = width;
+          axisOpt['height'] = height;
+
+          return axisOpt;
+        }
+
+        this.getSvg = function() {
+          var svgD = new Object();
+          svgD['svg'] = svg;
+          svgD['points'] = points;
+          svgD['area'] = area;
+          svgD['path'] = path;
+
+          return svgD;
+        }
       }
 
       //redraw function
@@ -224,95 +225,96 @@ var demo = new Vue({
           return temp;
         })();
 
-        x.domain(d3.extent(ddata, function(d) { 
-          return d['time']; 
+        x.domain(d3.extent(ddata, function(d) {
+          return d['time'];
         }));
 
         xAxis.ticks(d3.time.minutes, Math.floor(data.length / axisNum));
 
         svg.select("#mem-x-axis")
-          .transition()
-          .duration(200)
-          .ease("sin-in-out")
-          .call(xAxis);
+            .transition()
+            .duration(200)
+            .ease("sin-in-out")
+            .call(xAxis);
 
         //area line updating
         path.datum(ddata)
-          .transition()
-          .duration(200)
-          .attr("class", "areaM")
-          .attr("d", area);
+            .transition()
+            .duration(200)
+            .attr("class", "areaM")
+            .attr("d", area);
 
         //circle updating
         points.selectAll(".memtipPoints")
-          .data(ddata)
-          .attr("class", "memtipPoints")
-          .attr("cx", function (d) { 
-            return x(d.time); 
-          })
-          .attr("cy", function (d) {
-            return y(d['used']/d['total']); 
-          })
-          .attr("r", "6px");
+            .data(ddata)
+            .attr("class", "memtipPoints")
+            .attr("cx", function (d) {
+              return x(d.time);
+            })
+            .attr("cy", function (d) {
+              return y(d['used']/d['total']);
+            })
+            .attr("r", "6px");
 
         //draw new dot
         points.selectAll(".memtipPoints")
-          .data(ddata)
-          .enter().append("circle")
-          .attr("class", "memtipPoints")
-          .attr("cx", function (d) { 
-            return x(d.time); 
-          })
-          .attr("cy", function (d) {
-            return y(d['used']/d['total']); 
-          })
-          .attr("r", "6px")
-          .on("mouseover", function (d) {
-            d3.select(this).transition().duration(100).style("opacity", 1);
-
-            svg.append("g")
-              .append("line")
-              .attr("class", "tipDot")
-              .transition()
-              .duration(50)
-              .attr("x1", x(d['time']))
-              .attr("x2", x(d['time']))
-              .attr("y2", height);
-
-            svg.append("polyline")      // attach a polyline
-              .attr("class", "tipDot")  // colour the line
-              .style("fill", "black")     // remove any fill colour
-              .attr("points", (x(d['time'])-3.5)+","+(y(1)-2.5)+","+x(d['time'])+","+(y(1)+6)+","+(x(d['time'])+3.5)+","+(y(1)-2.5));
-
-            svg.append("polyline")      // attach a polyline
-              .attr("class", "tipDot")  // colour the line
-              .style("fill", "black")     // remove any fill colour
-              .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
-
-            $(this).tooltip({
-              'container': 'body',
-              'placement': 'left',
-              'title': 'Used' + ' | ' +formatPercent(d['used']/d['total']),
-              'trigger': 'hover'
+            .data(ddata)
+            .enter().append("circle")
+            .attr("class", "memtipPoints")
+            .attr("cx", function (d) {
+              return x(d.time);
             })
-            .tooltip('show');
-          })
-          .on("mouseout",  function (d) { 
-            d3.select(this).transition().duration(100).style("opacity", 0);
+            .attr("cy", function (d) {
+              return y(d['used']/d['total']);
+            })
+            .attr("r", "6px")
+            .on("mouseover", function (d) {
+              d3.select(this).transition().duration(100).style("opacity", 1);
 
-            d3.selectAll('.tipDot').transition().duration(100).remove();
+              svg.append("g")
+                  .attr("class", "tipDot")
+                  .append("line")
+                  .attr("class", "tipDot")
+                  .transition()
+                  .duration(50)
+                  .attr("x1", x(d['time']))
+                  .attr("x2", x(d['time']))
+                  .attr("y2", height);
 
-            $(this).tooltip('destroy');
-          });
+              svg.append("polyline")      // attach a polyline
+                  .attr("class", "tipDot")  // colour the line
+                  .style("fill", "black")     // remove any fill colour
+                  .attr("points", (x(d['time'])-3.5)+","+(y(1)-2.5)+","+x(d['time'])+","+(y(1)+6)+","+(x(d['time'])+3.5)+","+(y(1)-2.5));
+
+              svg.append("polyline")      // attach a polyline
+                  .attr("class", "tipDot")  // colour the line
+                  .style("fill", "black")     // remove any fill colour
+                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
+
+              $(this).tooltip({
+                'container': 'body',
+                'placement': 'left',
+                'title': 'Used' + ' | ' +formatPercent(d['used']/d['total']),
+                'trigger': 'hover'
+              })
+                  .tooltip('show');
+            })
+            .on("mouseout",  function (d) {
+              d3.select(this).transition().duration(100).style("opacity", 0);
+
+              d3.selectAll('.tipDot').transition().duration(100).remove();
+
+              $(this).tooltip('destroy');
+            });
 
         //remove old dot
         points.selectAll(".memtipPoints")
-          .data(ddata)
-          .exit()
-          .transition()
-          .duration(200)
-          .remove();
-        
+            .data(ddata)
+            .exit()
+            .transition()
+            .duration(200)
+            .remove();
+
       }
 
       //inits chart
@@ -331,7 +333,7 @@ var demo = new Vue({
         else {
           mAxis++;
         }
-        
+
         if (Object.keys(data).length === 60) data.shift();
 
         // generate(data, "#sensor-mem-area-d3");
@@ -415,11 +417,11 @@ var demo = new Vue({
             .attr("id", "docker-x-axis")
             .attr("transform", "translate(0, " + height + ")")
             .call(xAxis);
-         
+
         svg.append("g")
             .attr("class", "y axis")
             .call(yAxis);
-       
+
         var dots = svg.append("g")
             .attr("class", "scatter_dots");
 
@@ -441,18 +443,18 @@ var demo = new Vue({
             })
             .style("fill", function (d) { return color(d['issue']) })
             .on("mouseover", function (d) {
-                if ($("#"+d['issue']).prop("checked")) {
-                  $(this).tooltip({
-                    'container': 'body',
-                    'placement': 'left',
-                    'title': d["issue"] + " | " +d['num'],
-                    'trigger': 'hover'
-                  })
-                  .tooltip('show');
-                }
+              if ($("#"+d['issue']).prop("checked")) {
+                $(this).tooltip({
+                  'container': 'body',
+                  'placement': 'left',
+                  'title': d["issue"] + " | " +d['num'],
+                  'trigger': 'hover'
+                })
+                    .tooltip('show');
+              }
             })
             .on("mouseout", function(d) {
-                $(this).tooltip('destroy');
+              $(this).tooltip('destroy');
             });
 
         d3.selectAll('.scatter_legend').remove();
@@ -461,34 +463,34 @@ var demo = new Vue({
             .attr('class', 'scatter_legend');
 
         var singLegend = legend.selectAll('.docker_legend')
-          .data(self.selectScaCate)
-          .enter()
-          .append('g')
-          .attr('class', 'docker_legend')
-          .attr('transform', function(d, i) {
-            return 'translate(' + ((5 + (width-20) / 5) * i + 5) + ',' + (height + margin.bottom - legendSize - 15) + ')';
-          });
+            .data(self.selectScaCate)
+            .enter()
+            .append('g')
+            .attr('class', 'docker_legend')
+            .attr('transform', function(d, i) {
+              return 'translate(' + ((5 + (width-20) / 5) * i + 5) + ',' + (height + margin.bottom - legendSize - 15) + ')';
+            });
 
         singLegend.append('g:rect')
-          .attr('width', legendSize)
-          .attr('height', legendSize)
-          .style('fill', function(d) { 
-            return color(d);
-          });
+            .attr('width', legendSize)
+            .attr('height', legendSize)
+            .style('fill', function(d) {
+              return color(d);
+            });
 
         singLegend.append('g:text')
-          .attr('x', legendSize*1.4)
-          .attr('y', legendSize/1.3)
-          .attr('font-size', function() {
-            if ($(id).width() > 415)
-              return '.9em';
-            else {
-              return '.55em';
-            }
-          })
-          .text(function(d) { 
-            return d; 
-          });
+            .attr('x', legendSize*1.4)
+            .attr('y', legendSize/1.3)
+            .attr('font-size', function() {
+              if ($(id).width() > 415)
+                return '.9em';
+              else {
+                return '.55em';
+              }
+            })
+            .text(function(d) {
+              return d;
+            });
 
         //draw the rect for legends
         var rect = svg.append('g')
@@ -506,29 +508,29 @@ var demo = new Vue({
             });
 
         this.getOpt = function() {
-            var axisOpt = new Object();
-            axisOpt['x'] = x;
-            axisOpt['xAxis'] = xAxis;
-            axisOpt['y'] = y;
-            axisOpt['r'] = r;
-            axisOpt['legendSize'] = legendSize;
-            axisOpt['height'] = height;
-            axisOpt['width'] = width;
-            axisOpt['margin'] = margin;
+          var axisOpt = new Object();
+          axisOpt['x'] = x;
+          axisOpt['xAxis'] = xAxis;
+          axisOpt['y'] = y;
+          axisOpt['r'] = r;
+          axisOpt['legendSize'] = legendSize;
+          axisOpt['height'] = height;
+          axisOpt['width'] = width;
+          axisOpt['margin'] = margin;
 
-            return axisOpt;
-          }
+          return axisOpt;
+        }
 
         this.getSvg = function() {
-            var svgD = new Object();
-            svgD['svg'] = svg;
-            svgD['dots'] = dots;
-            svgD['color'] = color;
-            svgD['legend'] = legend
-            svgD['rect'] = rect;
+          var svgD = new Object();
+          svgD['svg'] = svg;
+          svgD['dots'] = dots;
+          svgD['color'] = color;
+          svgD['legend'] = legend
+          svgD['rect'] = rect;
 
-            return svgD;
-          }
+          return svgD;
+        }
       }
 
       //redraw function
@@ -541,8 +543,8 @@ var demo = new Vue({
         data.forEach(function(d) {
           for(var i=1; i<Object.keys(d).length; i++) {
             ddata.push({
-              'time': parseDate(d['time']), 
-              'issue': self.scatterCategory[i-1], 
+              'time': parseDate(d['time']),
+              'issue': self.scatterCategory[i-1],
               'num': d['issue'+i]
             });
           }
@@ -553,48 +555,48 @@ var demo = new Vue({
 
         //update the axis
         svg.select("#docker-x-axis")
-          .transition()
-          .duration(200)
-          .ease("sin-in-out")
-          .call(xAxis);
+            .transition()
+            .duration(200)
+            .ease("sin-in-out")
+            .call(xAxis);
 
         //update the dot
         dots.selectAll(".scatter_circle")
-          .data(ddata)
-          .transition()
-          .duration(200)
-          .attr("cx", function (d) {
-            return x(d['time']); 
-          })
-          .style("display", function (d) {
-            //to check if the checkbox has been selected and decide whether to show it out
-            //use display:none and display:inherit to control the display of scatter dots
-            if ($("#"+d['issue']).prop("checked"))
-              return 'inherit';
-            else
-              return 'none';
-          });
+            .data(ddata)
+            .transition()
+            .duration(200)
+            .attr("cx", function (d) {
+              return x(d['time']);
+            })
+            .style("display", function (d) {
+              //to check if the checkbox has been selected and decide whether to show it out
+              //use display:none and display:inherit to control the display of scatter dots
+              if ($("#"+d['issue']).prop("checked"))
+                return 'inherit';
+              else
+                return 'none';
+            });
         //////////////////////////
 
         //draw new dot
         dots.selectAll(".scatter_circle")
-          .data(ddata)
-          .enter()
-          .append("circle")
-          .attr("class", function (d) { return "scatter_circle scatter_circle_" + d['issue']; })
-          .attr("cx", function (d) { return x(d['time']); })
-          .attr("cy", function (d) { return y(d['num']); })
-          .attr("r", function (d) { return r(10); })
-          .style("display", function (d) {
-            //to check if the checkbox has been selected and decide whether to show it out
-            //use display:none and display:inherit to control the display of scatter dots
-            if ($("#"+d['issue']).prop("checked"))
-              return 'inherit';
-            else
-              return 'none';
-          })
-          .style("fill", function (d) { return color(d['issue']) })
-          .on("mouseover", function (d) {
+            .data(ddata)
+            .enter()
+            .append("circle")
+            .attr("class", function (d) { return "scatter_circle scatter_circle_" + d['issue']; })
+            .attr("cx", function (d) { return x(d['time']); })
+            .attr("cy", function (d) { return y(d['num']); })
+            .attr("r", function (d) { return r(10); })
+            .style("display", function (d) {
+              //to check if the checkbox has been selected and decide whether to show it out
+              //use display:none and display:inherit to control the display of scatter dots
+              if ($("#"+d['issue']).prop("checked"))
+                return 'inherit';
+              else
+                return 'none';
+            })
+            .style("fill", function (d) { return color(d['issue']) })
+            .on("mouseover", function (d) {
               if ($("#"+d['issue']).prop("checked")) {
                 $(this).tooltip({
                   'container': 'body',
@@ -602,20 +604,20 @@ var demo = new Vue({
                   'title': d["issue"] + " | " +d['num'],
                   'trigger': 'hover'
                 })
-                .tooltip('show');
+                    .tooltip('show');
               }
-          })
-          .on("mouseout", function(d) {
+            })
+            .on("mouseout", function(d) {
               $(this).tooltip('destroy');
-          });
+            });
 
         //remove old dot
         dots.selectAll(".scatter_circle")
-          .data(ddata)
-          .exit()
-          .transition()
-          .duration(500)
-          .remove();
+            .data(ddata)
+            .exit()
+            .transition()
+            .duration(500)
+            .remove();
 
         //redraw legend
         self.legendRedraw(self.selectScaCate, id, init.getSvg()['legend'], init.getSvg()['rect'], init.getOpt()['legendSize'], init.getOpt()['margin'], init.getOpt()['height'], init.getOpt()['width'], init.getSvg()['color']);
@@ -628,26 +630,26 @@ var demo = new Vue({
       setInterval(function() {
         //update donut data
         data.push({
-          time: hAxis + ":" + mAxis, 
-          issue1: Math.floor(Math.random()*20), 
-          issue2: Math.floor(Math.random()*20), 
+          time: hAxis + ":" + mAxis,
+          issue1: Math.floor(Math.random()*20),
+          issue2: Math.floor(Math.random()*20),
           issue3: Math.floor(Math.random()*20),
-          issue4: Math.floor(Math.random()*20), 
-          issue5: Math.floor(Math.random()*20), 
+          issue4: Math.floor(Math.random()*20),
+          issue5: Math.floor(Math.random()*20),
           issue6: Math.floor(Math.random()*20),
           issue7: Math.floor(Math.random()*20),
-          issue8: Math.floor(Math.random()*20), 
-          issue9: Math.floor(Math.random()*20), 
+          issue8: Math.floor(Math.random()*20),
+          issue9: Math.floor(Math.random()*20),
           issue10: Math.floor(Math.random()*20),
-          issue11: Math.floor(Math.random()*20), 
-          issue12: Math.floor(Math.random()*20), 
+          issue11: Math.floor(Math.random()*20),
+          issue12: Math.floor(Math.random()*20),
           issue13: Math.floor(Math.random()*20),
-          issue14: Math.floor(Math.random()*20), 
-          issue15: Math.floor(Math.random()*20), 
+          issue14: Math.floor(Math.random()*20),
+          issue15: Math.floor(Math.random()*20),
           issue16: Math.floor(Math.random()*20),
           issue17: Math.floor(Math.random()*20),
-          issue18: Math.floor(Math.random()*20), 
-          issue19: Math.floor(Math.random()*20), 
+          issue18: Math.floor(Math.random()*20),
+          issue19: Math.floor(Math.random()*20),
           issue20: Math.floor(Math.random()*20)
         });
 
@@ -658,7 +660,7 @@ var demo = new Vue({
         else {
           mAxis++;
         }
-        
+
         if (Object.keys(data).length === 60) data.shift();
 
         redraw(data, "#sensor-docker-scatterplot-d3", self.sensorDockerFunc.getSvg()['svg'], self.sensorDockerFunc.getSvg()['dots'], self.sensorDockerFunc.getSvg()['color'], self.sensorDockerFunc.getOpt()['x'], self.sensorDockerFunc.getOpt()['xAxis'], self.sensorDockerFunc.getOpt()['y'], self.sensorDockerFunc.getOpt()['r'], self.sensorDockerFunc, 5);
@@ -714,78 +716,78 @@ var demo = new Vue({
             .attr("transform", "translate(" + svgX + "," + svgY + ")");
 
         path = svg.datum(data).selectAll(".solidArc")
-          .data(pie)
-          .enter()
-          .append("path")
-          .attr("fill", function(d) { 
-            return color(d.data.inits);
-          })
-          .attr("class", "solidArc")
-          .attr("stroke", "none")
-          .attr("d", arc)
-          .each(function(d) { 
-            this._current=d; 
-          })
-          .on('mouseover', function(d) {
-            console.log(d);
+            .data(pie)
+            .enter()
+            .append("path")
+            .attr("fill", function(d) {
+              return color(d.data.inits);
+            })
+            .attr("class", "solidArc")
+            .attr("stroke", "none")
+            .attr("d", arc)
+            .each(function(d) {
+              this._current=d;
+            })
+            .on('mouseover', function(d) {
+              console.log(d);
 
-            d3.select(this).transition().duration(200).attr("d", arc.innerRadius(innerRadius).outerRadius(outerRadius / 0.75 * 0.9));
+              d3.select(this).transition().duration(200).attr("d", arc.innerRadius(innerRadius).outerRadius(outerRadius / 0.75 * 0.9));
 
-            //count the sum
-            var count = 0;
-            for (var i = 0; i < category.length; i++) {
-              count += data[i]['value'];
-            }
+              //count the sum
+              var count = 0;
+              for (var i = 0; i < category.length; i++) {
+                count += data[i]['value'];
+              }
 
-            svg.append("svg:text")
-              .attr("class", "donutCenterText")
-              .attr("dy", "-.3em")
-              .attr("text-anchor", "middle") 
-              .transition().duration(200)
-              .text(d['data']['inits']);
+              svg.append("svg:text")
+                  .attr("class", "donutCenterText")
+                  .attr("dy", "-.3em")
+                  .attr("text-anchor", "middle")
+                  .transition().duration(200)
+                  .text(d['data']['inits']);
 
-            svg.append("svg:text")
-              .attr("class", "donutCenterText")
-              .attr("dy", ".8em")
-              .attr("text-anchor", "middle") 
-              .transition().duration(200)
-              .text(formatPercent(d['value'] / count));
+              svg.append("svg:text")
+                  .attr("class", "donutCenterText")
+                  .attr("dy", ".8em")
+                  .attr("text-anchor", "middle")
+                  .transition().duration(200)
+                  .text(formatPercent(d['value'] / count));
 
-          })
-          .on('mouseout', function(d) {
-            d3.select(this).transition().duration(200).attr("d", arc.innerRadius(innerRadius).outerRadius(outerRadius));
+            })
+            .on('mouseout', function(d) {
+              d3.select(this).transition().duration(200).attr("d", arc.innerRadius(innerRadius).outerRadius(outerRadius));
 
-            d3.selectAll('.donutCenterText').remove();
-          });
+              d3.selectAll('.donutCenterText').remove();
+            });
 
         //legend rendering
         var legend = svg.selectAll('.legend')
-          .data(color.domain())
-          .enter()
-          .append('g')
-          .attr("id", function(d) {
-            return "legend-" + d;
-          })
-          .attr('class', 'legend')
-          .attr('transform', function(d, i) {
-            var horz = (i-2.8)*(legendSpacing+legendRectSize);
-            var vert =  radius + margin.bottom / 4;
-            return 'translate(' + horz + ',' + vert + ')';
-          });
+            .data(color.domain())
+            .enter()
+            .append('g')
+            .attr("id", function(d) {
+              return "legend-" + d;
+            })
+            .attr('class', 'legend')
+            .attr('transform', function(d, i) {
+              var horz = (i-2.8)*(legendSpacing+legendRectSize);
+              var vert =  radius + margin.bottom / 4;
+              return 'translate(' + horz + ',' + vert + ')';
+            });
 
         legend.append('rect')
-          .attr('width', legendRectSize)
-          .attr('height', legendRectSize)                                   
-          .style('fill', color)
-          .style('stroke', color);
-          
+            .attr('width', legendRectSize)
+            .attr('height', legendRectSize)
+            .style('fill', color)
+            .style('stroke', color);
+
         legend.append('text')
-          .data(data)
-          .attr('x', legendRectSize*1.2)
-          .attr('y', legendRectSize/1.3)
-          .text(function(d) { 
-            //console.log(d);
-            return d.inits; });
+            .data(data)
+            .attr('x', legendRectSize*1.2)
+            .attr('y', legendRectSize/1.3)
+            .text(function(d) {
+              //console.log(d);
+              return d.inits; });
 
         this.getPath = function() {
           return path;
@@ -808,10 +810,10 @@ var demo = new Vue({
         }
 
         var donut = d3.layout.pie()
-          .value(function(d) {return d.value; })
-          .sort(null);
+            .value(function(d) {return d.value; })
+            .sort(null);
 
-        donut.value(function(d) { return d['value']; }); 
+        donut.value(function(d) { return d['value']; });
         path = path.datum(data).data(donut).attr("d", arc); // compute the new angles
         path.transition().duration(750).attrTween("d", arcTween);
       }
@@ -920,181 +922,182 @@ var demo = new Vue({
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         svg.append("g")
-          .attr("class", "x axis")
-          .attr("id", "net-x-axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
+            .attr("class", "x axis")
+            .attr("id", "net-x-axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
         svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
+            .attr("class", "y axis")
+            .call(yAxis);
 
         var path = svg.selectAll(".gPath")
-          .data(ddata)
-          .enter().append("g")
-          .attr("class", "gPath"); 
+            .data(ddata)
+            .enter().append("g")
+            .attr("class", "gPath");
 
         path.append("path")
-          .attr("d", function(d) { return area(d['values']); })
-          .attr("class", function(d) {
-            if (d['category'] === 'upload')
-              return 'areaU';
-            else
-              return 'areaD';
-          });
+            .attr("d", function(d) { return area(d['values']); })
+            .attr("class", function(d) {
+              if (d['category'] === 'upload')
+                return 'areaU';
+              else
+                return 'areaD';
+            });
 
         var legend = svg.selectAll('.legend')
-          .data(category)
-          .enter()
-          .append('g')
-          .attr('class', 'legend')
-          .attr('transform', function(d, i) {
-            return 'translate(' + (i * 10 * legendSize) + ',' + (height + margin.bottom - legendSize * 1.2) + ')';
-          });
+            .data(category)
+            .enter()
+            .append('g')
+            .attr('class', 'legend')
+            .attr('transform', function(d, i) {
+              return 'translate(' + (i * 10 * legendSize) + ',' + (height + margin.bottom - legendSize * 1.2) + ')';
+            });
 
         legend.append('rect')
-          .attr('width', legendSize)
-          .attr('height', legendSize)
-          .style('fill', function(d) { return legendColor[d]});
-          
+            .attr('width', legendSize)
+            .attr('height', legendSize)
+            .style('fill', function(d) { return legendColor[d]});
+
         legend.append('text')
-          .data(category)
-          .attr('x', legendSize*1.2)
-          .attr('y', legendSize/1.1)
-          .text(function(d) { 
-            return d; 
-          });
+            .data(category)
+            .attr('x', legendSize*1.2)
+            .attr('y', legendSize/1.1)
+            .text(function(d) {
+              return d;
+            });
 
         var points = svg.selectAll(".seriesPoints")
-          .data(ddata)
-          .enter().append("g")
-          .attr("class", "seriesPoints");
+            .data(ddata)
+            .enter().append("g")
+            .attr("class", "seriesPoints");
 
         points.selectAll(".tipNetPoints")
-          .data(function (d) { return d['values']; })
-          .enter().append("circle")
-          .attr("class", "tipNetPoints")
-          .attr("cx", function (d) { return x(d['time']); })
-          .attr("cy", function (d) { return y(d['num']); })
-          .text(function (d) { return d['num']; })
-          .attr("r", "6px")
-          .style("fill",function (d) { return legendColor[d['category']]; })
-          .on("mouseover", function (d) {
-            // console.log();
-            var currentX = $(this)[0]['cx']['animVal']['value'],
-                currentY = $(this)[0]['cy']['animVal']['value'];
+            .data(function (d) { return d['values']; })
+            .enter().append("circle")
+            .attr("class", "tipNetPoints")
+            .attr("cx", function (d) { return x(d['time']); })
+            .attr("cy", function (d) { return y(d['num']); })
+            .text(function (d) { return d['num']; })
+            .attr("r", "6px")
+            .style("fill",function (d) { return legendColor[d['category']]; })
+            .on("mouseover", function (d) {
+              // console.log();
+              var currentX = $(this)[0]['cx']['animVal']['value'],
+                  currentY = $(this)[0]['cy']['animVal']['value'];
 
-            d3.select(this).transition().duration(100).style("opacity", 1);
+              d3.select(this).transition().duration(100).style("opacity", 1);
 
-            var ret = $('.tipNetPoints').filter(function(index) {
-              return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
-            });
+              var ret = $('.tipNetPoints').filter(function(index) {
+                return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
+              });
 
-            //to adjust tooltip'x content if upload and download data are the same
-            var jud = ret.length;
+              //to adjust tooltip'x content if upload and download data are the same
+              var jud = ret.length;
 
-            // console.log(ret.length);
+              // console.log(ret.length);
 
-            var mainCate = (function() {
-              if (jud === 0)
-                return 'upload/download';
-              else
-                return d['category'];
-            })();
+              var mainCate = (function() {
+                if (jud === 0)
+                  return 'upload/download';
+                else
+                  return d['category'];
+              })();
 
-            var viceCate = (function() {
-              if (category[0] === d['category'])
-                return category[1];
-              else
-                return category[0];
-            })();
+              var viceCate = (function() {
+                if (category[0] === d['category'])
+                  return category[1];
+                else
+                  return category[0];
+              })();
 
-            $.each(ret, function(index, val) {
-              // console.log(mainCate + ' | ' + viceCate);
+              $.each(ret, function(index, val) {
+                // console.log(mainCate + ' | ' + viceCate);
 
-              $(val).animate({
-                opacity: "1"
-              }, 100);
+                $(val).animate({
+                  opacity: "1"
+                }, 100);
 
-              $(val).tooltip({
+                $(val).tooltip({
+                  'container': 'body',
+                  'placement': 'left',
+                  'title': viceCate + ' | ' + $(this)[0]['textContent'],
+                  'trigger': 'hover'
+                })
+                    .tooltip('show');
+              });
+
+              svg.append("g")
+                  .attr("class", "tipDot")
+                  .append("line")
+                  .attr("class", "tipDot")
+                  .transition()
+                  .duration(50)
+                  .attr("x1", x(d['time']))
+                  .attr("x2", x(d['time']))
+                  .attr("y2", height);
+
+              svg.append("polyline")
+                  .attr("class", "tipDot")
+                  .style("fill", "black")
+                  .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
+
+              svg.append("polyline")
+                  .attr("class", "tipDot")
+                  .style("fill", "black")
+                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
+
+              $(this).tooltip({
                 'container': 'body',
                 'placement': 'left',
-                'title': viceCate + ' | ' + $(this)[0]['textContent'],
+                'title': mainCate + ' | ' + d['num'],
                 'trigger': 'hover'
               })
-              .tooltip('show');
-            });
-
-            svg.append("g")
-              .append("line")
-              .attr("class", "tipDot")
-              .transition()
-              .duration(50)
-              .attr("x1", x(d['time']))
-              .attr("x2", x(d['time']))
-              .attr("y2", height);
-
-            svg.append("polyline")      
-              .attr("class", "tipDot")  
-              .style("fill", "black")     
-              .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
-
-            svg.append("polyline")      
-              .attr("class", "tipDot")  
-              .style("fill", "black")     
-              .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
-
-            $(this).tooltip({
-              'container': 'body',
-              'placement': 'left',
-              'title': mainCate + ' | ' + d['num'],
-              'trigger': 'hover'
+                  .tooltip('show');
             })
-            .tooltip('show');
-          })
-          .on("mouseout",  function (d) { 
-            var currentX = $(this)[0]['cx']['animVal']['value'];
+            .on("mouseout",  function (d) {
+              var currentX = $(this)[0]['cx']['animVal']['value'];
 
-            d3.select(this).transition().duration(100).style("opacity", 0);
+              d3.select(this).transition().duration(100).style("opacity", 0);
 
-            var ret = $('.tipNetPoints').filter(function(index) {
-              return ($(this)[0]['cx']['animVal']['value'] === currentX);
+              var ret = $('.tipNetPoints').filter(function(index) {
+                return ($(this)[0]['cx']['animVal']['value'] === currentX);
+              });
+
+              $.each(ret, function(index, val) {
+                $(val).animate({
+                  opacity: "0"
+                }, 100);
+
+                $(val).tooltip('destroy');
+              });
+
+              d3.selectAll('.tipDot').transition().duration(100).remove();
+
+              $(this).tooltip('destroy');
             });
 
-            $.each(ret, function(index, val) {
-              $(val).animate({
-                opacity: "0"
-              }, 100);
+        this.getOpt = function() {
+          var axisOpt = new Object();
+          axisOpt['x'] = x;
+          axisOpt['y'] = y;
+          axisOpt['xAxis'] = xAxis;
+          axisOpt['width'] = width;
+          axisOpt['height'] = height;
 
-              $(val).tooltip('destroy');
-            });
+          return axisOpt;
+        }
 
-            d3.selectAll('.tipDot').transition().duration(100).remove();
+        this.getSvg = function() {
+          var svgD = new Object();
+          svgD['svg'] = svg;
+          svgD['points'] = points;
+          svgD['area'] = area;
+          svgD['path'] = path;
+          svgD['legendColor'] = legendColor;
 
-            $(this).tooltip('destroy');
-          });
-
-          this.getOpt = function() {
-            var axisOpt = new Object();
-            axisOpt['x'] = x;
-            axisOpt['y'] = y;
-            axisOpt['xAxis'] = xAxis;
-            axisOpt['width'] = width;
-            axisOpt['height'] = height;
-
-            return axisOpt;
-          }
-
-          this.getSvg = function() {
-            var svgD = new Object();
-            svgD['svg'] = svg;
-            svgD['points'] = points;
-            svgD['area'] = area;
-            svgD['path'] = path;
-            svgD['legendColor'] = legendColor;
-
-            return svgD;
-          }
+          return svgD;
+        }
       }
 
       //redraw function
@@ -1123,34 +1126,34 @@ var demo = new Vue({
         xAxis.ticks(d3.time.minutes, Math.floor(data.length / axisNum));
 
         svg.select("#net-x-axis")
-          .transition()
-          .duration(200)
-          .ease("sin-in-out")
-          .call(xAxis);
+            .transition()
+            .duration(200)
+            .ease("sin-in-out")
+            .call(xAxis);
 
         //different area line updating
 
         path.select("path")
-          .data(ddata)
-          .transition()
-          .duration(200)
-          .attr("d", function(d) { return area(d['values']); })
-          .attr("class", function(d) {
-            if (d['category'] === 'upload')
-              return 'areaU';
-            else
-              return 'areaD';
-          });
+            .data(ddata)
+            .transition()
+            .duration(200)
+            .attr("d", function(d) { return area(d['values']); })
+            .attr("class", function(d) {
+              if (d['category'] === 'upload')
+                return 'areaU';
+              else
+                return 'areaD';
+            });
 
         //circle updating
 
         points.selectAll(".tipNetPoints")
-          .data(function (d) { return d['values']; })
-          .attr("class", "tipNetPoints")
-          .attr("cx", function (d) { return x(d['time']); })
-          .attr("cy", function (d) { return y(d['num']); })
-          .attr("r", "6px")
-          .style("fill",function (d) { return legendColor[d['category']]; });
+            .data(function (d) { return d['values']; })
+            .attr("class", "tipNetPoints")
+            .attr("cx", function (d) { return x(d['time']); })
+            .attr("cy", function (d) { return y(d['num']); })
+            .attr("r", "6px")
+            .style("fill",function (d) { return legendColor[d['category']]; });
 
         // //draw new dot
 
@@ -1158,115 +1161,116 @@ var demo = new Vue({
         points.data(ddata);
 
         points.selectAll(".tipNetPoints")
-          .data(function (d) {
-            return d['values'];
-          })
-          .enter().append("circle")
-          .attr("class", "tipNetPoints")
-          .attr("cx", function (d) { return x(d['time']); })
-          .attr("cy", function (d) { return y(d['num']); })
-          .text(function (d) { return d['num']; })
-          .attr("r", "6px")
-          .style("fill",function (d) { return legendColor[d['category']]; })
-          .on("mouseover", function (d) {
-            // console.log();
-            var currentX = $(this)[0]['cx']['animVal']['value'],
-                currentY = $(this)[0]['cy']['animVal']['value'];
+            .data(function (d) {
+              return d['values'];
+            })
+            .enter().append("circle")
+            .attr("class", "tipNetPoints")
+            .attr("cx", function (d) { return x(d['time']); })
+            .attr("cy", function (d) { return y(d['num']); })
+            .text(function (d) { return d['num']; })
+            .attr("r", "6px")
+            .style("fill",function (d) { return legendColor[d['category']]; })
+            .on("mouseover", function (d) {
+              // console.log();
+              var currentX = $(this)[0]['cx']['animVal']['value'],
+                  currentY = $(this)[0]['cy']['animVal']['value'];
 
-            d3.select(this).transition().duration(100).style("opacity", 1);
+              d3.select(this).transition().duration(100).style("opacity", 1);
 
-            var ret = $('.tipNetPoints').filter(function(index) {
-              return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
-            });
+              var ret = $('.tipNetPoints').filter(function(index) {
+                return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
+              });
 
-            //to adjust tooltip'x content if upload and download data are the same
-            var jud = ret.length;
+              //to adjust tooltip'x content if upload and download data are the same
+              var jud = ret.length;
 
-            var mainCate = (function() {
-              if (jud === 0)
-                return 'upload/download';
-              else
-                return d['category'];
-            })();
+              var mainCate = (function() {
+                if (jud === 0)
+                  return 'upload/download';
+                else
+                  return d['category'];
+              })();
 
-            var viceCate = (function() {
-              if (category[0] === d['category'])
-                return category[1];
-              else
-                return category[0];
-            })();
+              var viceCate = (function() {
+                if (category[0] === d['category'])
+                  return category[1];
+                else
+                  return category[0];
+              })();
 
-            $.each(ret, function(index, val) {
-              $(val).animate({
-                opacity: "1"
-              }, 100);
+              $.each(ret, function(index, val) {
+                $(val).animate({
+                  opacity: "1"
+                }, 100);
 
-              $(val).tooltip({
+                $(val).tooltip({
+                  'container': 'body',
+                  'placement': 'left',
+                  'title': viceCate + ' | ' + $(this)[0]['textContent'],
+                  'trigger': 'hover'
+                })
+                    .tooltip('show');
+              });
+
+              svg.append("g")
+                  .attr("class", "tipDot")
+                  .append("line")
+                  .attr("class", "tipDot")
+                  .transition()
+                  .duration(50)
+                  .attr("x1", x(d['time']))
+                  .attr("x2", x(d['time']))
+                  .attr("y2", height);
+
+              svg.append("polyline")
+                  .attr("class", "tipDot")
+                  .style("fill", "black")
+                  .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
+
+              svg.append("polyline")
+                  .attr("class", "tipDot")
+                  .style("fill", "black")
+                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
+
+              $(this).tooltip({
                 'container': 'body',
                 'placement': 'left',
-                'title': viceCate + ' | ' + $(this)[0]['textContent'],
+                'title': mainCate + ' | ' + d['num'],
                 'trigger': 'hover'
               })
-              .tooltip('show');
-            });
-
-            svg.append("g")
-              .append("line")
-              .attr("class", "tipDot")
-              .transition()
-              .duration(50)
-              .attr("x1", x(d['time']))
-              .attr("x2", x(d['time']))
-              .attr("y2", height);
-
-            svg.append("polyline")      
-              .attr("class", "tipDot")  
-              .style("fill", "black")     
-              .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
-
-            svg.append("polyline")      
-              .attr("class", "tipDot")  
-              .style("fill", "black")     
-              .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
-
-            $(this).tooltip({
-              'container': 'body',
-              'placement': 'left',
-              'title': mainCate + ' | ' + d['num'],
-              'trigger': 'hover'
+                  .tooltip('show');
             })
-            .tooltip('show');
-          })
-          .on("mouseout",  function (d) { 
-            var currentX = $(this)[0]['cx']['animVal']['value'];
+            .on("mouseout",  function (d) {
+              var currentX = $(this)[0]['cx']['animVal']['value'];
 
-            d3.select(this).transition().duration(100).style("opacity", 0);
+              d3.select(this).transition().duration(100).style("opacity", 0);
 
-            var ret = $('.tipNetPoints').filter(function(index) {
-              return ($(this)[0]['cx']['animVal']['value'] === currentX);
+              var ret = $('.tipNetPoints').filter(function(index) {
+                return ($(this)[0]['cx']['animVal']['value'] === currentX);
+              });
+
+              $.each(ret, function(index, val) {
+                $(val).animate({
+                  opacity: "0"
+                }, 100);
+
+                $(val).tooltip('destroy');
+              });
+
+              d3.selectAll('.tipDot').transition().duration(100).remove();
+
+              $(this).tooltip('destroy');
             });
-
-            $.each(ret, function(index, val) {
-              $(val).animate({
-                opacity: "0"
-              }, 100);
-
-              $(val).tooltip('destroy');
-            });
-
-            d3.selectAll('.tipDot').transition().duration(100).remove();
-
-            $(this).tooltip('destroy');
-          });
 
         //remove old dot
         points.selectAll(".tipNetPoints")
-          .data(function (d) { return d['values']; })
-          .exit()
-          .transition()
-          .duration(200)
-          .remove();
-        
+            .data(function (d) { return d['values']; })
+            .exit()
+            .transition()
+            .duration(200)
+            .remove();
+
       }
 
       //inits chart
@@ -1285,7 +1289,7 @@ var demo = new Vue({
         else {
           mAxis++;
         }
-        
+
         if (Object.keys(data).length === 60) data.shift();
 
         redraw(data, "#sensor-net-area-d3", sca.getOpt()['x'], sca.getOpt()['y'], sca.getOpt()['xAxis'], sca.getSvg()['svg'], sca.getSvg()['area'], sca.getSvg()['path'], sca.getSvg()['points'], sca.getSvg()['legendColor'], sca.getOpt()['height'], 6);
@@ -1420,198 +1424,199 @@ var demo = new Vue({
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         svg.append("g")
-          .attr("class", "x axis")
-          .attr("id", "disk-x-axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
+            .attr("class", "x axis")
+            .attr("id", "disk-x-axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
         svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
+            .attr("class", "y axis")
+            .call(yAxis);
 
         var path = svg.selectAll(".gPath")
-          .data(adata)
-          .enter().append("g")
-          .attr("class", "gPath"); 
+            .data(adata)
+            .enter().append("g")
+            .attr("class", "gPath");
 
         path.append("path")
-          .attr("d", function(d) { return area(d['values']); })
-          .attr("class", 'areaR');
+            .attr("d", function(d) { return area(d['values']); })
+            .attr("class", 'areaR');
 
         var lpath = svg.selectAll(".lpath")
-          .data(ldata)
-          .enter().append("g")
-          .attr("class", "lpath");
+            .data(ldata)
+            .enter().append("g")
+            .attr("class", "lpath");
 
         lpath.append("path")
-          .attr("d", function(d) { return line(d['values']); })
-          .attr("class", "areaW");
+            .attr("d", function(d) { return line(d['values']); })
+            .attr("class", "areaW");
 
         var legend = svg.selectAll('.legend')
-          .data(category)
-          .enter()
-          .append('g')
-          .attr('class', 'legend')
-          .attr('transform', function(d, i) {
-            return 'translate(' + (i * 10 * legendSize) + ',' + (height + margin.bottom - legendSize * 1.2) + ')';
-          });
+            .data(category)
+            .enter()
+            .append('g')
+            .attr('class', 'legend')
+            .attr('transform', function(d, i) {
+              return 'translate(' + (i * 10 * legendSize) + ',' + (height + margin.bottom - legendSize * 1.2) + ')';
+            });
 
         legend.append('rect')
-          .attr('width', legendSize)
-          .attr('height', legendSize)                                   
-          .style('fill', function(d) { 
-            return legendColor[d]
-          })
-          .style('stroke', function(d) {
-            return legendColor['read'];
-          });
-          
+            .attr('width', legendSize)
+            .attr('height', legendSize)
+            .style('fill', function(d) {
+              return legendColor[d]
+            })
+            .style('stroke', function(d) {
+              return legendColor['read'];
+            });
+
         legend.append('text')
-          .data(category)
-          .attr('x', legendSize * 1.2)
-          .attr('y', legendSize / 1.1)
-          .text(function(d) { 
-            return d; 
-          });
+            .data(category)
+            .attr('x', legendSize * 1.2)
+            .attr('y', legendSize / 1.1)
+            .text(function(d) {
+              return d;
+            });
 
         var points = svg.selectAll(".seriesPoints")
-          .data(ddata)
-          .enter().append("g")
-          .attr("class", "seriesPoints");
+            .data(ddata)
+            .enter().append("g")
+            .attr("class", "seriesPoints");
 
         points.selectAll(".tipPoints")
-          .data(function (d) { return d['values']; })
-          .enter().append("circle")
-          .attr("class", "tipPoints")
-          .attr("cx", function (d) { return x(d['time']); })
-          .attr("cy", function (d) { return y(d['num']); })
-          .text(function (d) { return d['num']; })
-          .attr("r", "6px")
-          .style("fill",function (d) { return legendColor[d['category']]; })
-          .style("stroke", function (d) {
-            if (d['category'] === 'write')
-              return legendColor['read'];
-            else
-              return legendColor['write'];
-          })
-          .on("mouseover", function (d) {
-            // console.log();
-            var currentX = $(this)[0]['cx']['animVal']['value'],
-                currentY = $(this)[0]['cy']['animVal']['value'];
-
-            d3.select(this).transition().duration(100).style("opacity", 1);
-
-            var ret = $('circle').filter(function(index) {
-              return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
-            });
-
-            //to adjust tooltip'x content if read and write data are the same
-            var jud = ret.length;
-
-            // console.log(ret.length);
-
-            var mainCate = (function() {
-              if (jud === 0)
-                return 'read/write';
+            .data(function (d) { return d['values']; })
+            .enter().append("circle")
+            .attr("class", "tipPoints")
+            .attr("cx", function (d) { return x(d['time']); })
+            .attr("cy", function (d) { return y(d['num']); })
+            .text(function (d) { return d['num']; })
+            .attr("r", "6px")
+            .style("fill",function (d) { return legendColor[d['category']]; })
+            .style("stroke", function (d) {
+              if (d['category'] === 'write')
+                return legendColor['read'];
               else
-                return d['category'];
-            })();
+                return legendColor['write'];
+            })
+            .on("mouseover", function (d) {
+              // console.log();
+              var currentX = $(this)[0]['cx']['animVal']['value'],
+                  currentY = $(this)[0]['cy']['animVal']['value'];
 
-            var viceCate = (function() {
-              if (category[0] === d['category'])
-                return category[1];
-              else
-                return category[0];
-            })();
+              d3.select(this).transition().duration(100).style("opacity", 1);
 
-            $.each(ret, function(index, val) {
-              // console.log(mainCate + ' | ' + viceCate);
+              var ret = $('circle').filter(function(index) {
+                return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
+              });
 
-              $(val).animate({
-                opacity: "1"
-              }, 100);
+              //to adjust tooltip'x content if read and write data are the same
+              var jud = ret.length;
 
-              $(val).tooltip({
+              // console.log(ret.length);
+
+              var mainCate = (function() {
+                if (jud === 0)
+                  return 'read/write';
+                else
+                  return d['category'];
+              })();
+
+              var viceCate = (function() {
+                if (category[0] === d['category'])
+                  return category[1];
+                else
+                  return category[0];
+              })();
+
+              $.each(ret, function(index, val) {
+                // console.log(mainCate + ' | ' + viceCate);
+
+                $(val).animate({
+                  opacity: "1"
+                }, 100);
+
+                $(val).tooltip({
+                  'container': 'body',
+                  'placement': 'left',
+                  'title': viceCate + ' | ' + $(this)[0]['textContent'],
+                  'trigger': 'hover'
+                })
+                    .tooltip('show');
+              });
+
+              svg.append("g")
+                  .attr("class", "tipDot")
+                  .append("line")
+                  .attr("class", "tipDot")
+                  .transition()
+                  .duration(50)
+                  .attr("x1", x(d['time']))
+                  .attr("x2", x(d['time']))
+                  .attr("y2", height);
+
+              svg.append("polyline")
+                  .attr("class", "tipDot")
+                  .style("fill", "black")
+                  .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
+
+              svg.append("polyline")
+                  .attr("class", "tipDot")
+                  .style("fill", "black")
+                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
+
+              $(this).tooltip({
                 'container': 'body',
                 'placement': 'left',
-                'title': viceCate + ' | ' + $(this)[0]['textContent'],
+                'title': mainCate + ' | ' + d['num'],
                 'trigger': 'hover'
               })
-              .tooltip('show');
-            });
-
-            svg.append("g")
-              .append("line")
-              .attr("class", "tipDot")
-              .transition()
-              .duration(50)
-              .attr("x1", x(d['time']))
-              .attr("x2", x(d['time']))
-              .attr("y2", height);
-
-            svg.append("polyline")      
-              .attr("class", "tipDot")  
-              .style("fill", "black")     
-              .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
-
-            svg.append("polyline")      
-              .attr("class", "tipDot")  
-              .style("fill", "black")     
-              .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
-
-            $(this).tooltip({
-              'container': 'body',
-              'placement': 'left',
-              'title': mainCate + ' | ' + d['num'],
-              'trigger': 'hover'
+                  .tooltip('show');
             })
-            .tooltip('show');
-          })
-          .on("mouseout",  function (d) { 
-            var currentX = $(this)[0]['cx']['animVal']['value'];
+            .on("mouseout",  function (d) {
+              var currentX = $(this)[0]['cx']['animVal']['value'];
 
-            d3.select(this).transition().duration(100).style("opacity", 0);
+              d3.select(this).transition().duration(100).style("opacity", 0);
 
-            var ret = $('circle').filter(function(index) {
-              return ($(this)[0]['cx']['animVal']['value'] === currentX);
+              var ret = $('circle').filter(function(index) {
+                return ($(this)[0]['cx']['animVal']['value'] === currentX);
+              });
+
+              $.each(ret, function(index, val) {
+                $(val).animate({
+                  opacity: "0"
+                }, 100);
+
+                $(val).tooltip('destroy');
+              });
+
+              d3.selectAll('.tipDot').transition().duration(100).remove();
+
+              $(this).tooltip('destroy');
             });
 
-            $.each(ret, function(index, val) {
-              $(val).animate({
-                opacity: "0"
-              }, 100);
+        this.getOpt = function() {
+          var axisOpt = new Object();
+          axisOpt['x'] = x;
+          axisOpt['y'] = y;
+          axisOpt['xAxis'] = xAxis;
+          axisOpt['width'] = width;
+          axisOpt['height'] = height;
 
-              $(val).tooltip('destroy');
-            });
+          return axisOpt;
+        }
 
-            d3.selectAll('.tipDot').transition().duration(100).remove();
+        this.getSvg = function() {
+          var svgD = new Object();
+          svgD['svg'] = svg;
+          svgD['points'] = points;
+          svgD['area'] = area;
+          svgD['path'] = path;
+          svgD['lpath'] = lpath;
+          svgD['legendColor'] = legendColor;
+          svgD['line'] = line;
 
-            $(this).tooltip('destroy');
-          });
-
-          this.getOpt = function() {
-            var axisOpt = new Object();
-            axisOpt['x'] = x;
-            axisOpt['y'] = y;
-            axisOpt['xAxis'] = xAxis;
-            axisOpt['width'] = width;
-            axisOpt['height'] = height;
-
-            return axisOpt;
-          }
-
-          this.getSvg = function() {
-            var svgD = new Object();
-            svgD['svg'] = svg;
-            svgD['points'] = points;
-            svgD['area'] = area;
-            svgD['path'] = path;
-            svgD['lpath'] = lpath;
-            svgD['legendColor'] = legendColor;
-            svgD['line'] = line;
-
-            return svgD;
-          }
+          return svgD;
+        }
       }
 
       //redraw function
@@ -1674,34 +1679,34 @@ var demo = new Vue({
         xAxis.ticks(d3.time.minutes, Math.floor(data.length / axisNum));
 
         svg.select("#disk-x-axis")
-          .transition()
-          .duration(200)
-          .ease("sin-in-out")
-          .call(xAxis);
+            .transition()
+            .duration(200)
+            .ease("sin-in-out")
+            .call(xAxis);
 
         //different area line updating
 
         path.select("path")
-          .data(adata)
-          .transition()
-          .duration(200)
-          .attr("d", function(d) { return area(d['values']); })
-          .attr("class", 'areaR');
+            .data(adata)
+            .transition()
+            .duration(200)
+            .attr("d", function(d) { return area(d['values']); })
+            .attr("class", 'areaR');
 
         lpath.select("path")
-          .data(ldata)
-          .transition()
-          .duration(200)
-          .attr("d", function(d) { return line(d['values']); })
-          .attr("class", 'areaW');
+            .data(ldata)
+            .transition()
+            .duration(200)
+            .attr("d", function(d) { return line(d['values']); })
+            .attr("class", 'areaW');
 
         //circle updating
 
         points.selectAll(".tipPoints")
-          .data(function (d) { return d['values']; })
-          .attr("class", "tipPoints")
-          .attr("cx", function (d) { return x(d['time']); })
-          .attr("cy", function (d) { return y(d['num']); });
+            .data(function (d) { return d['values']; })
+            .attr("class", "tipPoints")
+            .attr("cx", function (d) { return x(d['time']); })
+            .attr("cy", function (d) { return y(d['num']); });
 
         // //draw new dot
 
@@ -1709,121 +1714,122 @@ var demo = new Vue({
         points.data(ddata);
 
         points.selectAll(".tipPoints")
-          .data(function (d) {
-            return d['values'];
-          })
-          .enter().append("circle")
-          .attr("class", "tipPoints")
-          .attr("cx", function (d) { return x(d['time']); })
-          .attr("cy", function (d) { return y(d['num']); })
-          .text(function (d) { return d['num']; })
-          .attr("r", "6px")
-          .style("fill",function (d) { return legendColor[d['category']]; })
-          .style("stroke", function (d) {
-            if (d['category'] === 'write')
-              return legendColor['read'];
-            else
-              return legendColor['write'];
-          })
-          .on("mouseover", function (d) {
-            // console.log();
-            var currentX = $(this)[0]['cx']['animVal']['value'],
-                currentY = $(this)[0]['cy']['animVal']['value'];
-
-            d3.select(this).transition().duration(100).style("opacity", 1);
-
-            var ret = $('circle').filter(function(index) {
-              return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
-            });
-
-            //to adjust tooltip'x content if read and write data are the same
-            var jud = ret.length;
-
-            var mainCate = (function() {
-              if (jud === 0)
-                return 'read/write';
+            .data(function (d) {
+              return d['values'];
+            })
+            .enter().append("circle")
+            .attr("class", "tipPoints")
+            .attr("cx", function (d) { return x(d['time']); })
+            .attr("cy", function (d) { return y(d['num']); })
+            .text(function (d) { return d['num']; })
+            .attr("r", "6px")
+            .style("fill",function (d) { return legendColor[d['category']]; })
+            .style("stroke", function (d) {
+              if (d['category'] === 'write')
+                return legendColor['read'];
               else
-                return d['category'];
-            })();
+                return legendColor['write'];
+            })
+            .on("mouseover", function (d) {
+              // console.log();
+              var currentX = $(this)[0]['cx']['animVal']['value'],
+                  currentY = $(this)[0]['cy']['animVal']['value'];
 
-            var viceCate = (function() {
-              if (category[0] === d['category'])
-                return category[1];
-              else
-                return category[0];
-            })();
+              d3.select(this).transition().duration(100).style("opacity", 1);
 
-            $.each(ret, function(index, val) {
-              $(val).animate({
-                opacity: "1"
-              }, 100);
+              var ret = $('circle').filter(function(index) {
+                return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
+              });
 
-              $(val).tooltip({
+              //to adjust tooltip'x content if read and write data are the same
+              var jud = ret.length;
+
+              var mainCate = (function() {
+                if (jud === 0)
+                  return 'read/write';
+                else
+                  return d['category'];
+              })();
+
+              var viceCate = (function() {
+                if (category[0] === d['category'])
+                  return category[1];
+                else
+                  return category[0];
+              })();
+
+              $.each(ret, function(index, val) {
+                $(val).animate({
+                  opacity: "1"
+                }, 100);
+
+                $(val).tooltip({
+                  'container': 'body',
+                  'placement': 'left',
+                  'title': viceCate + ' | ' + $(this)[0]['textContent'],
+                  'trigger': 'hover'
+                })
+                    .tooltip('show');
+              });
+
+              svg.append("g")
+                  .attr("class", "tipDot")
+                  .append("line")
+                  .attr("class", "tipDot")
+                  .transition()
+                  .duration(50)
+                  .attr("x1", x(d['time']))
+                  .attr("x2", x(d['time']))
+                  .attr("y2", height);
+
+              svg.append("polyline")
+                  .attr("class", "tipDot")
+                  .style("fill", "black")
+                  .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
+
+              svg.append("polyline")
+                  .attr("class", "tipDot")
+                  .style("fill", "black")
+                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
+
+              $(this).tooltip({
                 'container': 'body',
                 'placement': 'left',
-                'title': viceCate + ' | ' + $(this)[0]['textContent'],
+                'title': mainCate + ' | ' + d['num'],
                 'trigger': 'hover'
               })
-              .tooltip('show');
-            });
-
-            svg.append("g")
-              .append("line")
-              .attr("class", "tipDot")
-              .transition()
-              .duration(50)
-              .attr("x1", x(d['time']))
-              .attr("x2", x(d['time']))
-              .attr("y2", height);
-
-            svg.append("polyline")      
-              .attr("class", "tipDot")  
-              .style("fill", "black")     
-              .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
-
-            svg.append("polyline")      
-              .attr("class", "tipDot")
-              .style("fill", "black")     
-              .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
-
-            $(this).tooltip({
-              'container': 'body',
-              'placement': 'left',
-              'title': mainCate + ' | ' + d['num'],
-              'trigger': 'hover'
+                  .tooltip('show');
             })
-            .tooltip('show');
-          })
-          .on("mouseout",  function (d) { 
-            var currentX = $(this)[0]['cx']['animVal']['value'];
+            .on("mouseout",  function (d) {
+              var currentX = $(this)[0]['cx']['animVal']['value'];
 
-            d3.select(this).transition().duration(100).style("opacity", 0);
+              d3.select(this).transition().duration(100).style("opacity", 0);
 
-            var ret = $('circle').filter(function(index) {
-              return ($(this)[0]['cx']['animVal']['value'] === currentX);
+              var ret = $('circle').filter(function(index) {
+                return ($(this)[0]['cx']['animVal']['value'] === currentX);
+              });
+
+              $.each(ret, function(index, val) {
+                $(val).animate({
+                  opacity: "0"
+                }, 100);
+
+                $(val).tooltip('destroy');
+              });
+
+              d3.selectAll('.tipDot').transition().duration(100).remove();
+
+              $(this).tooltip('destroy');
             });
 
-            $.each(ret, function(index, val) {
-              $(val).animate({
-                opacity: "0"
-              }, 100);
-
-              $(val).tooltip('destroy');
-            });
-
-            d3.selectAll('.tipDot').transition().duration(100).remove();
-
-            $(this).tooltip('destroy');
-          });
-          
         //remove old dot
         points.selectAll("circle")
-          .data(function (d) { return d['values']; })
-          .exit()
-          .transition()
-          .duration(200)
-          .remove();
-        
+            .data(function (d) { return d['values']; })
+            .exit()
+            .transition()
+            .duration(200)
+            .remove();
+
       }
 
       //inits chart
@@ -1842,7 +1848,7 @@ var demo = new Vue({
         else {
           mAxis++;
         }
-        
+
         if (Object.keys(data).length === 60) data.shift();
 
         redraw(data, "#sensor-disk-multi-d3", sca.getOpt()['x'], sca.getOpt()['y'], sca.getOpt()['xAxis'], sca.getSvg()['svg'], sca.getSvg()['area'], sca.getSvg()['line'], sca.getSvg()['path'], sca.getSvg()['lpath'], sca.getSvg()['points'], sca.getSvg()['legendColor'], sca.getOpt()['height'], 6);
@@ -1850,7 +1856,7 @@ var demo = new Vue({
     },
     displayPeople: function () {
       var data = [];
-        
+
       for(var i=1; i<=20; i++) {
         var x = Math.random() * 141.4 - 70.7;
         var y = Math.abs(x) + Math.random() * (Math.sqrt(10000- x*x) - Math.abs(x));
@@ -1912,53 +1918,53 @@ var demo = new Vue({
 
         //the outlines drawing of arcpie chart
         svg.append("line")
-          .attr('class', 'moniOutlineXY')
-          .attr({
-            x1: x(0),
-            y1: y(0),
-            x2: x(Math.sqrt(5000)),
-            y2: y(Math.sqrt(5000)),
-            stroke: 'gray',
-            "stroke-width": 1
-          });
+            .attr('class', 'moniOutlineXY')
+            .attr({
+              x1: x(0),
+              y1: y(0),
+              x2: x(Math.sqrt(5000)),
+              y2: y(Math.sqrt(5000)),
+              stroke: 'gray',
+              "stroke-width": 1
+            });
 
         svg.append("line")
-          .attr('class', 'moniOutlineXY')
-          .attr({
-            x1: x(0),
-            y1: y(0),
-            x2: x(-Math.sqrt(5000)),
-            y2: y(Math.sqrt(5000)),
-            stroke: 'gray',
-            "stroke-width": 1
-          });
+            .attr('class', 'moniOutlineXY')
+            .attr({
+              x1: x(0),
+              y1: y(0),
+              x2: x(-Math.sqrt(5000)),
+              y2: y(Math.sqrt(5000)),
+              stroke: 'gray',
+              "stroke-width": 1
+            });
 
         var outerPath = svg.append("path")
             .attr("transform", "translate(" + (width * 15 / 32) + "," + height + ")")
             .attr("class", "moniOutlineArc")
             .attr("d", outlineArc);
-       
+
         svg.selectAll(".monitorCircle")
-          .data(data)
-          .enter()
-          .append("circle")
-          .attr("class", "monitorCircle")
-          .attr("cx", function (d) { return x(d['x']); })
-          .attr("cy", function (d) { return y(d['y']); })
-          .attr("r", function (d) { return r(18); })
-          .style("fill", function (d) { return color(d['id'])})
-          .on("mouseover", function(d) {
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "monitorCircle")
+            .attr("cx", function (d) { return x(d['x']); })
+            .attr("cy", function (d) { return y(d['y']); })
+            .attr("r", function (d) { return r(18); })
+            .style("fill", function (d) { return color(d['id'])})
+            .on("mouseover", function(d) {
               $(this).tooltip({
                 'container': 'body',
                 'placement': 'top',
                 'title': 'PEOPLE ' + d['id'],
                 'trigger': 'hover'
               })
-              .tooltip('show');
-          })
-          .on("mouseout", function(d) {
+                  .tooltip('show');
+            })
+            .on("mouseout", function(d) {
               $(this).tooltip('destroy');
-          });
+            });
 
         var legendhBase = height / 21 + 1;
 
@@ -1970,20 +1976,20 @@ var demo = new Vue({
 
         // draw legend colored rectangles
         legend.append("rect")
-          .attr('class', 'singMoniLegend')
-          .attr("x", width - legendhBase)
-          .attr("width", legendhBase - 1)
-          .attr("height", legendhBase - 1)
-          .style("fill", function (d) { return color(d['id'])});
+            .attr('class', 'singMoniLegend')
+            .attr("x", width - legendhBase)
+            .attr("width", legendhBase - 1)
+            .attr("height", legendhBase - 1)
+            .style("fill", function (d) { return color(d['id'])});
 
         // draw legend text
         legend.append("text")
-          .attr("x", width - legendhBase * 1.4)
-          .attr("y", legendhBase * 0.7)
+            .attr("x", width - legendhBase * 1.4)
+            .attr("y", legendhBase * 0.7)
           // .attr("dy", ".35em")
-          .style("text-anchor", "end")
-          .attr('font-size', '.6em')
-          .text(function(d) { return d['id'];});
+            .style("text-anchor", "end")
+            .attr('font-size', '.6em')
+            .text(function(d) { return d['id'];});
 
         this.getOpt = function() {
           var opt = new Object();
@@ -2007,65 +2013,65 @@ var demo = new Vue({
       function redraw(data, svg, legend, x, y, r, color, width, height, legendhBase) {
         //update the dot
         svg.selectAll(".monitorCircle")
-          .data(data);
+            .data(data);
 
         //draw new dot
         svg.selectAll(".monitorCircle")
-          .data(data)
-          .enter()
-          .append("circle")
+            .data(data)
+            .enter()
+            .append("circle")
           // .transition()
           // .duration(500)
-          .attr("class", "monitorCircle")
-          .attr("cx", function (d) { return x(d['x']); })
-          .attr("cy", function (d) { return y(d['y']); })
-          .attr("r", function (d) { return r(18); })
-          .style("fill", function (d) { return color(d['id'])})
-          .on("mouseover", function(d) {
+            .attr("class", "monitorCircle")
+            .attr("cx", function (d) { return x(d['x']); })
+            .attr("cy", function (d) { return y(d['y']); })
+            .attr("r", function (d) { return r(18); })
+            .style("fill", function (d) { return color(d['id'])})
+            .on("mouseover", function(d) {
               $(this).tooltip({
                 'container': 'body',
                 'placement': 'top',
                 'title': 'PEOPLE ' + d['id'],
                 'trigger': 'hover'
               })
-              .tooltip('show');
-          })
-          .on("mouseout", function(d) {
+                  .tooltip('show');
+            })
+            .on("mouseout", function(d) {
               $(this).tooltip('destroy');
-          });
+            });
 
         //remove old data
         svg.selectAll(".monitorCircle")
-          .data(data)
-          .exit()
+            .data(data)
+            .exit()
           // .transition()
           // .duration(500)
-          .remove();
+            .remove();
 
         //remove the old legend and redraw the new legend
         svg.selectAll(".moniLegend").remove();
 
         legend = svg.selectAll(".moniLegend")
-          .data(data)
-          .enter().append("g")
-          .attr("class", "moniLegend")
-          .attr("transform", function(d, i) { return "translate(0," + i * legendhBase + ")"; });
+            .data(data)
+            .enter().append("g")
+            .attr("class", "moniLegend")
+            .attr("transform", function(d, i) { return "translate(0," + i * legendhBase + ")"; });
 
         // draw legend colored rectangles
         legend.append("rect")
-          .attr('class', 'singMoniLegend')
-          .attr("x", width - legendhBase)
-          .attr("width", legendhBase - 1)
-          .attr("height", legendhBase - 1)
-          .style("fill", function (d) { return color(d['id'])});
+            .attr('class', 'singMoniLegend')
+            .attr("x", width - legendhBase)
+            .attr("width", legendhBase - 1)
+            .attr("height", legendhBase - 1)
+            .style("fill", function (d) { return color(d['id'])});
 
         // draw legend text
         legend.append("text")
-          .attr("x", width - legendhBase * 1.4)
-          .attr("y", legendhBase * 0.7)
-          .style("text-anchor", "end")
-          .attr('font-size', '.6em')
-          .text(function(d) { return d['id'];});
+            .attr("x", width - legendhBase * 1.4)
+            .attr("y", legendhBase * 0.7)
+            .style("text-anchor", "end")
+            .attr('font-size', '.6em')
+            .text(function(d) { return d['id'];});
       }
 
       //inits chart
@@ -2079,11 +2085,11 @@ var demo = new Vue({
           //to confirm the circle in the arcpie scope
           var x = Math.random() * 141.4 - 70.7;
           var y = Math.abs(x) + Math.random() * (Math.sqrt(10000- x*x) - Math.abs(x));
-          
+
           data.push({
-            "x": x, 
-            "y": y, 
-            "radius": Math.floor(Math.random()*20), 
+            "x": x,
+            "y": y,
+            "radius": Math.floor(Math.random()*20),
             "id": i
           });
         }
@@ -2098,9 +2104,9 @@ var demo = new Vue({
 
       for (var i=0; i<10; i++) {
         data.push({
-          "id": 'People-'+i, 
-          "time": hAxis + ":" + (i * 2), 
-          "distance": Math.floor(Math.random()*100), 
+          "id": 'People-'+i,
+          "time": hAxis + ":" + (i * 2),
+          "distance": Math.floor(Math.random()*100),
           "duration": Math.floor(Math.random() * 2 + 4)
         });
       }
@@ -2136,9 +2142,9 @@ var demo = new Vue({
 
           for (var i=0; i<data.length; i++) {
             temp.push({
-              'id': data[i]['id'], 
-              'time': parseDate(data[i]['time']), 
-              'distance': data[i]['distance'], 
+              'id': data[i]['id'],
+              'time': parseDate(data[i]['time']),
+              'distance': data[i]['distance'],
               'duration': data[i]['duration']
             });
           }
@@ -2146,18 +2152,18 @@ var demo = new Vue({
           return temp;
         })();
 
-        x.domain(d3.extent(ddata, function(d) { 
-          return d.time; 
+        x.domain(d3.extent(ddata, function(d) {
+          return d.time;
         }));
 
         y.domain([-2,102]);
 
-        var minTime = d3.min(ddata, function(d) { 
-          return d.time;
-        }),
-            maxTime = d3.max(ddata, function(d) { 
-          return d.time;
-        });
+        var minTime = d3.min(ddata, function(d) {
+              return d.time;
+            }),
+            maxTime = d3.max(ddata, function(d) {
+              return d.time;
+            });
 
         var durTime;
 
@@ -2199,79 +2205,79 @@ var demo = new Vue({
             });
 
         bars.append("rect")
-          .attr("class", "innertimeRect")
-          .attr("height", 2)
-          .attr("x", function(d) { 
-            var timeJud = d['time'] - minTime;
-            if (timeJud < 0)
-              timeJud = timeJud + 43200000;
-            if (timeJud <= d['duration'] * 60000) 
-              return x(minTime);
-            else
-              return x(d['time']) - d['duration'] / durTime * width;
-          })
-          .attr("y", function(d) { 
-            return y(d['distance']) - 1; 
-          })
-          .attr("width", function(d) {
-            var timeJud = d['time'] - minTime;
-            if (timeJud < 0)
-              timeJud = timeJud + 43200000;
-            if (timeJud > d['duration'] * 60000) 
-              return d['duration'] / durTime * width;
-            else
-              return x(d['time']);
-          });
-
-        bars.append("rect")
-            .attr("class", "outertimeRect")
-            .attr("height", 16)
-            .attr("x", function(d) { 
+            .attr("class", "innertimeRect")
+            .attr("height", 2)
+            .attr("x", function(d) {
               var timeJud = d['time'] - minTime;
               if (timeJud < 0)
                 timeJud = timeJud + 43200000;
-              if (timeJud <= d['duration'] * 60000) 
+              if (timeJud <= d['duration'] * 60000)
                 return x(minTime);
               else
                 return x(d['time']) - d['duration'] / durTime * width;
             })
-            .attr("y", function(d) { 
-              return y(d['distance']) - 8; 
+            .attr("y", function(d) {
+              return y(d['distance']) - 1;
             })
-            .attr("width", function(d) { 
+            .attr("width", function(d) {
               var timeJud = d['time'] - minTime;
               if (timeJud < 0)
                 timeJud = timeJud + 43200000;
-              if (timeJud > d['duration'] * 60000) 
+              if (timeJud > d['duration'] * 60000)
+                return d['duration'] / durTime * width;
+              else
+                return x(d['time']);
+            });
+
+        bars.append("rect")
+            .attr("class", "outertimeRect")
+            .attr("height", 16)
+            .attr("x", function(d) {
+              var timeJud = d['time'] - minTime;
+              if (timeJud < 0)
+                timeJud = timeJud + 43200000;
+              if (timeJud <= d['duration'] * 60000)
+                return x(minTime);
+              else
+                return x(d['time']) - d['duration'] / durTime * width;
+            })
+            .attr("y", function(d) {
+              return y(d['distance']) - 8;
+            })
+            .attr("width", function(d) {
+              var timeJud = d['time'] - minTime;
+              if (timeJud < 0)
+                timeJud = timeJud + 43200000;
+              if (timeJud > d['duration'] * 60000)
                 return d['duration'] / durTime * width;
               else
                 return x(d['time']);
             });
 
         bars.on("mouseover", function(d) {
-            d3.selectAll('.timelineRect').transition().duration(0).style("opacity", .4);
+          d3.selectAll('.timelineRect').transition().duration(0).style("opacity", .4);
 
-            d3.select("#timelineRect-"+d['id']).transition().duration(50).style("opacity", 1);
+          d3.select("#timelineRect-"+d['id']).transition().duration(50).style("opacity", 1);
 
-            // tooltip.html('ID: '+d['id'] + '<br>Duration: ' + d['duration']+'mins<br>Time: '+d['time']+'clock<br>Distance: '+Math.floor(d['distance'])+' meters')
+          // tooltip.html('ID: '+d['id'] + '<br>Duration: ' + d['duration']+'mins<br>Time: '+d['time']+'clock<br>Distance: '+Math.floor(d['distance'])+' meters')
 
-            $(this).popover({
-              'container': 'body',
-              'placement': 'right',
-              'html': 'true',
-              'title': d['id'],
-              'content': 'Time | ' + d['time'].getDate() + "/" + (d['time'].getMonth() + 1) + "-" + d['time'].getHours() + ":" + d['time'].getMinutes() + '<br>Duration | ' + d['duration'] + '<br>Distance | ' + d['distance'],
-              'trigger': 'hover'
-            })
-            .popover('show');
+          $(this).popover({
+            'container': 'body',
+            'placement': 'right',
+            'html': 'true',
+            'title': d['id'],
+            'content': 'Time | ' + d['time'].getDate() + "/" + (d['time'].getMonth() + 1) + "-" + d['time'].getHours() + ":" + d['time'].getMinutes() + '<br>Duration | ' + d['duration'] + '<br>Distance | ' + d['distance'],
+            'trigger': 'hover'
+          })
+              .popover('show');
 
-            console.log(d['time']);
+          console.log(d['time']);
         })
-        .on("mouseout", function(d) {
-            d3.selectAll('.timelineRect').transition().duration(300).style("opacity", 1);
+            .on("mouseout", function(d) {
+              d3.selectAll('.timelineRect').transition().duration(300).style("opacity", 1);
 
-            $(this).popover('destroy');
-        });
+              $(this).popover('destroy');
+            });
 
         this.getData = function () {
           var svgD = new Object();
@@ -2295,9 +2301,9 @@ var demo = new Vue({
 
           for (var i=0; i<data.length; i++) {
             temp.push({
-              'id': data[i]['id'], 
-              'time': parseDate(data[i]['time']), 
-              'distance': data[i]['distance'], 
+              'id': data[i]['id'],
+              'time': parseDate(data[i]['time']),
+              'distance': data[i]['distance'],
               'duration': data[i]['duration']
             });
           }
@@ -2307,17 +2313,17 @@ var demo = new Vue({
 
         // console.log(ddata);
 
-        x.domain(d3.extent(ddata, function(d) { 
+        x.domain(d3.extent(ddata, function(d) {
           // console.log(d['time']);
-          return d.time; 
+          return d.time;
         }));
 
-        var minTime = d3.min(ddata, function(d) { 
-          return d.time;
-        }),
-            maxTime = d3.max(ddata, function(d) { 
-          return d.time;
-        });
+        var minTime = d3.min(ddata, function(d) {
+              return d.time;
+            }),
+            maxTime = d3.max(ddata, function(d) {
+              return d.time;
+            });
 
         var durTime;
 
@@ -2329,64 +2335,64 @@ var demo = new Vue({
         xAxis.ticks(d3.time.minutes, Math.floor(durTime / axisNum));
 
         svg.select('#timeline-x-axis')
-          .transition()
-          .duration(100)
-          .ease("sin-in-out")
-          .call(xAxis);
+            .transition()
+            .duration(100)
+            .ease("sin-in-out")
+            .call(xAxis);
 
         bars = svg.selectAll(".timelineRect")
-          .data(ddata);
+            .data(ddata);
 
         bars.select('.innertimeRect')
-          .transition()
-          .duration(0)
+            .transition()
+            .duration(0)
           // .ease("sin-in-out")
-          .attr("x", function(d) { 
-            var timeJud = d['time'] - minTime;
-            if (timeJud < 0)
-              timeJud = timeJud + 43200000;
-            if (timeJud <= d['duration'] * 60000) 
-              return x(minTime);
-            else
-              return x(d['time']) - d['duration'] / durTime * width;
-          })
-          .attr("y", function(d) { 
-            return y(d['distance']) - 1; 
-          })
-          .attr("width", function(d) {
-            var timeJud = d['time'] - minTime;
-            if (timeJud < 0)
-              timeJud = timeJud + 43200000;
-            if (timeJud > d['duration'] * 60000) 
-              return d['duration'] / durTime * width;
-            else
-              return x(d['time']);
-          });
+            .attr("x", function(d) {
+              var timeJud = d['time'] - minTime;
+              if (timeJud < 0)
+                timeJud = timeJud + 43200000;
+              if (timeJud <= d['duration'] * 60000)
+                return x(minTime);
+              else
+                return x(d['time']) - d['duration'] / durTime * width;
+            })
+            .attr("y", function(d) {
+              return y(d['distance']) - 1;
+            })
+            .attr("width", function(d) {
+              var timeJud = d['time'] - minTime;
+              if (timeJud < 0)
+                timeJud = timeJud + 43200000;
+              if (timeJud > d['duration'] * 60000)
+                return d['duration'] / durTime * width;
+              else
+                return x(d['time']);
+            });
 
         bars.select('.outertimeRect')
-          .transition()
-          .duration(0)
-          .attr("x", function(d) { 
-            var timeJud = d['time'] - minTime;
-            if (timeJud < 0)
-              timeJud = timeJud + 43200000;
-            if (timeJud <= d['duration'] * 60000) 
-              return x(minTime);
-            else
-              return x(d['time']) - d['duration'] / durTime * width;
-          })
-          .attr("y", function(d) { 
-            return y(d['distance']) - 8; 
-          })
-          .attr("width", function(d) { 
-            var timeJud = d['time'] - minTime;
-            if (timeJud < 0)
-              timeJud = timeJud + 43200000;
-            if (timeJud > d['duration'] * 60000) 
-              return d['duration'] / durTime * width;
-            else
-              return x(d['time']);
-          });
+            .transition()
+            .duration(0)
+            .attr("x", function(d) {
+              var timeJud = d['time'] - minTime;
+              if (timeJud < 0)
+                timeJud = timeJud + 43200000;
+              if (timeJud <= d['duration'] * 60000)
+                return x(minTime);
+              else
+                return x(d['time']) - d['duration'] / durTime * width;
+            })
+            .attr("y", function(d) {
+              return y(d['distance']) - 8;
+            })
+            .attr("width", function(d) {
+              var timeJud = d['time'] - minTime;
+              if (timeJud < 0)
+                timeJud = timeJud + 43200000;
+              if (timeJud > d['duration'] * 60000)
+                return d['duration'] / durTime * width;
+              else
+                return x(d['time']);
+            });
 
         var singBar = svg.selectAll(".timelineRect")
             .data(ddata)
@@ -2397,82 +2403,82 @@ var demo = new Vue({
             });
 
         singBar.append("rect")
-          .attr("class", "innertimeRect")
-          .attr("height", 2)
-          .attr("x", function(d) { 
-            var timeJud = d['time'] - minTime;
-            if (timeJud < 0)
-              timeJud = timeJud + 43200000;
-            if (timeJud <= d['duration'] * 60000) 
-              return x(minTime);
-            else
-              return x(d['time']) - d['duration'] / durTime * width;
-          })
-          .attr("y", function(d) { 
-            return y(d['distance']) - 1; 
-          })
-          .attr("width", function(d) {
-            var timeJud = d['time'] - minTime;
-            if (timeJud < 0)
-              timeJud = timeJud + 43200000;
-            if (timeJud > d['duration'] * 60000) 
-              return d['duration'] / durTime * width;
-            else
-              return x(d['time']);
-          });
-
-        singBar.append("rect")
-            .attr("class", "outertimeRect")
-            .attr("height", 16)
-            .attr("x", function(d) { 
+            .attr("class", "innertimeRect")
+            .attr("height", 2)
+            .attr("x", function(d) {
               var timeJud = d['time'] - minTime;
               if (timeJud < 0)
                 timeJud = timeJud + 43200000;
-              if (timeJud <= d['duration'] * 60000) 
+              if (timeJud <= d['duration'] * 60000)
                 return x(minTime);
               else
                 return x(d['time']) - d['duration'] / durTime * width;
             })
-            .attr("y", function(d) { 
-              return y(d['distance']) - 8; 
+            .attr("y", function(d) {
+              return y(d['distance']) - 1;
             })
-            .attr("width", function(d) { 
+            .attr("width", function(d) {
               var timeJud = d['time'] - minTime;
               if (timeJud < 0)
                 timeJud = timeJud + 43200000;
-              if (timeJud > d['duration'] * 60000) 
+              if (timeJud > d['duration'] * 60000)
+                return d['duration'] / durTime * width;
+              else
+                return x(d['time']);
+            });
+
+        singBar.append("rect")
+            .attr("class", "outertimeRect")
+            .attr("height", 16)
+            .attr("x", function(d) {
+              var timeJud = d['time'] - minTime;
+              if (timeJud < 0)
+                timeJud = timeJud + 43200000;
+              if (timeJud <= d['duration'] * 60000)
+                return x(minTime);
+              else
+                return x(d['time']) - d['duration'] / durTime * width;
+            })
+            .attr("y", function(d) {
+              return y(d['distance']) - 8;
+            })
+            .attr("width", function(d) {
+              var timeJud = d['time'] - minTime;
+              if (timeJud < 0)
+                timeJud = timeJud + 43200000;
+              if (timeJud > d['duration'] * 60000)
                 return d['duration'] / durTime * width;
               else
                 return x(d['time']);
             });
 
         singBar.on("mouseover", function(d) {
-            d3.selectAll('.timelineRect').transition().duration(0).style("opacity", .4);
+          d3.selectAll('.timelineRect').transition().duration(0).style("opacity", .4);
 
-            d3.select("#timelineRect-"+d['id']).transition().duration(50).style("opacity", 1);
+          d3.select("#timelineRect-"+d['id']).transition().duration(50).style("opacity", 1);
 
-            $(this).popover({
-              'container': 'body',
-              'placement': 'right',
-              'html': 'true',
-              'title': d['id'],
-              'content': 'Time | ' + d['time'].getDate() + "/" + (d['time'].getMonth() + 1) + "-" + d['time'].getHours() + ":" + d['time'].getMinutes() + '<br>Duration | ' + d['duration'] + '<br>Distance | ' + d['distance'],
-              'trigger': 'hover'
-            })
-            .popover('show');
+          $(this).popover({
+            'container': 'body',
+            'placement': 'right',
+            'html': 'true',
+            'title': d['id'],
+            'content': 'Time | ' + d['time'].getDate() + "/" + (d['time'].getMonth() + 1) + "-" + d['time'].getHours() + ":" + d['time'].getMinutes() + '<br>Duration | ' + d['duration'] + '<br>Distance | ' + d['distance'],
+            'trigger': 'hover'
+          })
+              .popover('show');
         })
-        .on("mouseout", function(d) {
-            d3.selectAll('.timelineRect').transition().duration(300).style("opacity", 1);
+            .on("mouseout", function(d) {
+              d3.selectAll('.timelineRect').transition().duration(300).style("opacity", 1);
 
-            $(this).popover('destroy');
-        });
+              $(this).popover('destroy');
+            });
 
         bars.selectAll('.timelineRect')
-          .data(ddata)
-          .exit()
-          .transition()
-          .duration(200)
-          .remove();
+            .data(ddata)
+            .exit()
+            .transition()
+            .duration(200)
+            .remove();
       }
 
       //inits chart
@@ -2490,16 +2496,16 @@ var demo = new Vue({
             beginJud = '23:' + (60 + mAxis - scaAxis);
           else
             beginJud = (hAxis-1) + ':' + (60 + mAxis - scaAxis);
-            // console.log(beginJud);
+          // console.log(beginJud);
         } else {
-            beginJud = hAxis + ':' + (mAxis - scaAxis);
+          beginJud = hAxis + ':' + (mAxis - scaAxis);
         }
-          
+
         if (scaAxis === 60) {
           for (var i=0; ; i++) {
-            if ((i+delNum) === loopJud) 
+            if ((i+delNum) === loopJud)
               break;
-            
+
             // console('beginJud is '+beginJud + ', and time is' + data[i-delNum]['time']);
 
             //BUG
@@ -2517,13 +2523,13 @@ var demo = new Vue({
         //append new data into existing json dataset
         // var randNum = Math.floor(Math.random()*2);
         var randNum = 1;
-        
+
         if (randNum) {
           for (var i=0; i<randNum; i++) {
             data.push({
-              "id": 'people-' + id, 
-              "time": hAxis + ":" + mAxis, 
-              "distance": Math.floor(Math.random()*100), 
+              "id": 'people-' + id,
+              "time": hAxis + ":" + mAxis,
+              "distance": Math.floor(Math.random()*100),
               "duration": Math.floor(Math.random()*4+6)});
 
             id++;
@@ -2545,25 +2551,25 @@ var demo = new Vue({
     },
     displayDetec: function () {
       var data = [
-          {label: "fall detection", value: 59, color: '#fff799'},
-          {label: "lens detection", value: 75, color: '#ffee00'},
-          {label: "violence_sos detection", value: 92, color: '#0068b7'},
-          {label: "single money detection", value: 80, color: '#00b7ee'}
+        {label: "fall detection", value: 59, color: '#fff799'},
+        {label: "lens detection", value: 75, color: '#ffee00'},
+        {label: "violence_sos detection", value: 92, color: '#0068b7'},
+        {label: "single money detection", value: 80, color: '#00b7ee'}
       ];
 
       var data2 = [
-          {label: "task_scheduler", value: 59, color: '#fff799'},
-          {label: "depth_MoG_background", value: 75, color: '#ffee00'},
-          {label: "door_latch", value: 92, color: '#0068b7'},
-          {label: "primesense_ringbuffer", value: 80, color: '#00b7ee'},
-          {label: "plane_view", value: 59, color: '#a5d4f3'},
-          {label: "detection_combination", value: 75, color: '#eff9ff'},
-          {label: "object_tracker", value: 92, color: '#00a0e9'},
-          {label: "global_event_vis", value: 80, color: '#ca02ab'},
-          {label: "fall_detection", value: 59, color: '#f29c9f'},
-          {label: "violence_sos_detection", value: 75, color: '#ff0000'},
-          {label: "invalid_operation_detection", value: 92, color: '#22ac38'},
-          {label: "cutboard", value: 80, color: '#FF8C00'}
+        {label: "task_scheduler", value: 59, color: '#fff799'},
+        {label: "depth_MoG_background", value: 75, color: '#ffee00'},
+        {label: "door_latch", value: 92, color: '#0068b7'},
+        {label: "primesense_ringbuffer", value: 80, color: '#00b7ee'},
+        {label: "plane_view", value: 59, color: '#a5d4f3'},
+        {label: "detection_combination", value: 75, color: '#eff9ff'},
+        {label: "object_tracker", value: 92, color: '#00a0e9'},
+        {label: "global_event_vis", value: 80, color: '#ca02ab'},
+        {label: "fall_detection", value: 59, color: '#f29c9f'},
+        {label: "violence_sos_detection", value: 75, color: '#ff0000'},
+        {label: "invalid_operation_detection", value: 92, color: '#22ac38'},
+        {label: "cutboard", value: 80, color: '#FF8C00'}
       ];
 
       var category = [];
@@ -2579,14 +2585,14 @@ var demo = new Vue({
 
         var pie = d3.layout.pie()
             .sort(null)
-            .value(function (d) { 
-              return 50; 
+            .value(function (d) {
+              return 50;
             });
 
         var arc = d3.svg.arc()
             .innerRadius(innerRadius)
-            .outerRadius(function (d) { 
-              return (radius - innerRadius) * (d.data.value / mAxis) + innerRadius; 
+            .outerRadius(function (d) {
+              return (radius - innerRadius) * (d.data.value / mAxis) + innerRadius;
             });
 
         var outlineArc = d3.svg.arc()
@@ -2609,16 +2615,16 @@ var demo = new Vue({
             .attr("class", "solidAsterArc")
             .attr("d", arc)
             .on("mouseover", function (d) {
-                $(this).tooltip({
-                  'container': 'body',
-                  'placement': 'top',
-                  'title': d.data.label + " | " + d.data.value,
-                  'trigger': 'hover'
-                })
-                .tooltip('show');
+              $(this).tooltip({
+                'container': 'body',
+                'placement': 'top',
+                'title': d.data.label + " | " + d.data.value,
+                'trigger': 'hover'
+              })
+                  .tooltip('show');
             })
             .on("mouseout", function(d) {
-                $(this).tooltip('destroy');
+              $(this).tooltip('destroy');
             });
 
         var outerPath = svg.selectAll(".outlineAsterArc")
@@ -2647,17 +2653,17 @@ var demo = new Vue({
 
       //redraw function
       function redraw(data, path, pie, arc, r, ir, mAxis) {
-        // arc.outerRadius(function (d) { 
-        //   return (r - ir) * (d.data.value / mAxis) + ir; 
+        // arc.outerRadius(function (d) {
+        //   return (r - ir) * (d.data.value / mAxis) + ir;
         // });
         console.log("I am updating the drawing work.");
 
         path.data(pie(data))
-          .transition()
-          .duration(200)
-          .attr("d", arc.innerRadius(ir).outerRadius(function (d) { 
-            return (r - ir) * (d.data.value / mAxis) + ir; 
-          }));
+            .transition()
+            .duration(200)
+            .attr("d", arc.innerRadius(ir).outerRadius(function (d) {
+              return (r - ir) * (d.data.value / mAxis) + ir;
+            }));
       }
 
       //inits chart
@@ -2712,7 +2718,7 @@ var demo = new Vue({
 
         var x = d3.time.scale()
             .range([0, width]);
-            // .rangeRoundBands([0, width], .1);
+        // .rangeRoundBands([0, width], .1);
 
         var x1 = d3.scale.ordinal();
 
@@ -2765,141 +2771,141 @@ var demo = new Vue({
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         svg.append("g")
-          .attr("class", "x axis")
-          .attr("id", "count-x-axis")
-          .attr("transform", "translate(" + tranLength + "," + height + ")")
-          .call(xAxis);
+            .attr("class", "x axis")
+            .attr("id", "count-x-axis")
+            .attr("transform", "translate(" + tranLength + "," + height + ")")
+            .call(xAxis);
 
         svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
+            .attr("class", "y axis")
+            .call(yAxis);
 
         var stat = svg.selectAll(".countBpath")
-          .data(ddata)
-          .enter().append("g")
-          .attr("class", "countBpath")
-          .attr("transform", function(d) { return "translate(" + x(parseDate(d['time'])) + ",0)"; });
+            .data(ddata)
+            .enter().append("g")
+            .attr("class", "countBpath")
+            .attr("transform", function(d) { return "translate(" + x(parseDate(d['time'])) + ",0)"; });
 
         stat.selectAll(".countIORect")
-          .data(function(d) { return d.ages; })
-          .enter().append("rect")
-          .attr('class', 'countIORect')
-          .attr("width", x1.rangeBand())
-          .attr("x", function(d) { return x1(d['name']); })
-          .attr("y", function(d) { return y(d['value']); })
-          .attr("height", function(d) { return height - y(d['value']); })
-          .style("fill", function(d) { return legendColor[d['name']]; });
+            .data(function(d) { return d.ages; })
+            .enter().append("rect")
+            .attr('class', 'countIORect')
+            .attr("width", x1.rangeBand())
+            .attr("x", function(d) { return x1(d['name']); })
+            .attr("y", function(d) { return y(d['value']); })
+            .attr("height", function(d) { return height - y(d['value']); })
+            .style("fill", function(d) { return legendColor[d['name']]; });
 
         var path = svg.append("g")
-          .attr("class", "countPath"); 
+            .attr("class", "countPath");
 
         path.append("path")
-          .attr("d", line(ddata))
-          .attr("class", 'countRemainPath')
-          .attr('stroke', legendColor['remain']);
+            .attr("d", line(ddata))
+            .attr("class", 'countRemainPath')
+            .attr('stroke', legendColor['remain']);
 
         var legend = svg.selectAll('.countLegend')
-          .data(category)
-          .enter()
-          .append('g')
-          .attr('class', 'countLegend')
-          .attr('transform', function(d, i) {
-            return 'translate(' + (i * 10 * legendSize) + ',' + (height + margin.bottom - legendSize * 1.2) + ')';
-          });
+            .data(category)
+            .enter()
+            .append('g')
+            .attr('class', 'countLegend')
+            .attr('transform', function(d, i) {
+              return 'translate(' + (i * 10 * legendSize) + ',' + (height + margin.bottom - legendSize * 1.2) + ')';
+            });
 
         legend.append('rect')
-          .attr('width', legendSize)
-          .attr('height', legendSize)                                   
-          .style('fill', function(d) { 
-            return legendColor[d];
-          });
-          
+            .attr('width', legendSize)
+            .attr('height', legendSize)
+            .style('fill', function(d) {
+              return legendColor[d];
+            });
+
         legend.append('text')
-          .data(category)
-          .attr('x', legendSize * 1.2)
-          .attr('y', legendSize / 1.1)
-          .text(function(d) { 
-            return d; 
-          });
+            .data(category)
+            .attr('x', legendSize * 1.2)
+            .attr('y', legendSize / 1.1)
+            .text(function(d) {
+              return d;
+            });
 
         var points = svg.append("g")
-          .attr("class", "countPoints");
+            .attr("class", "countPoints");
 
         points.selectAll(".tipCountPoints")
-          .data(ddata)
-          .enter().append("circle")
-          .attr("class", "tipCountPoints")
-          .attr("cx", function (d) { return xTransLen(d['time']); })
-          .attr("cy", function (d) { return y(d['remain']); })
-          .attr("r", "6px")
-          .on("mouseover", function (d) {
-            d3.select(this).transition().duration(100).attr("r", '8px');
+            .data(ddata)
+            .enter().append("circle")
+            .attr("class", "tipCountPoints")
+            .attr("cx", function (d) { return xTransLen(d['time']); })
+            .attr("cy", function (d) { return y(d['remain']); })
+            .attr("r", "6px")
+            .on("mouseover", function (d) {
+              d3.select(this).transition().duration(100).attr("r", '8px');
 
-            // svg.append("g")
-            //   .append("line")
-            //   .attr("class", "tipDot")
-            //   .transition()
-            //   .duration(50)
-            //   .attr("x1", xTransLen(d['time']))
-            //   .attr("x2", xTransLen(d['time']))
-            //   .attr("y2", height);
+              // svg.append("g")
+              //   .append("line")
+              //   .attr("class", "tipDot")
+              //   .transition()
+              //   .duration(50)
+              //   .attr("x1", xTransLen(d['time']))
+              //   .attr("x2", xTransLen(d['time']))
+              //   .attr("y2", height);
 
-            // svg.append("polyline")      
-            //   .attr("class", "tipDot")  
-            //   .style("fill", "black")     
-            //   .attr("points", (xTransLen(d['time'])-3.5)+","+(0-2.5)+","+xTransLen(d['time'])+","+(0+6)+","+(xTransLen(d['time'])+3.5)+","+(0-2.5));
+              // svg.append("polyline")
+              //   .attr("class", "tipDot")
+              //   .style("fill", "black")
+              //   .attr("points", (xTransLen(d['time'])-3.5)+","+(0-2.5)+","+xTransLen(d['time'])+","+(0+6)+","+(xTransLen(d['time'])+3.5)+","+(0-2.5));
 
-            // svg.append("polyline")      
-            //   .attr("class", "tipDot")  
-            //   .style("fill", "black")     
-            //   .attr("points", (xTransLen(d['time'])-3.5)+","+(y(0)+2.5)+","+xTransLen(d['time'])+","+(y(0)-6)+","+(xTransLen(d['time'])+3.5)+","+(y(0)+2.5));
+              // svg.append("polyline")
+              //   .attr("class", "tipDot")
+              //   .style("fill", "black")
+              //   .attr("points", (xTransLen(d['time'])-3.5)+","+(y(0)+2.5)+","+xTransLen(d['time'])+","+(y(0)-6)+","+(xTransLen(d['time'])+3.5)+","+(y(0)+2.5));
 
-            $(this).popover({
-              'container': 'body',
-              'placement': 'top',
-              'html': 'true',
-              'title': d['time'],
-              'content': '<table><tr><td>' + 'TIME' + '</td><td> | ' + d['time'] + '</td></tr>' + '<tr><td>' + 'REMAIN' + '</td><td> | ' + d['remain'] + '</td></tr>' + '<tr><td>' + 'IN' + '</td><td> | ' + d['in'] + '</td></tr>' + '<tr><td>' + 'OUT' + '</td><td> | ' + d['out'] + '</td></tr></table>',
-              'trigger': 'hover'
+              $(this).popover({
+                'container': 'body',
+                'placement': 'top',
+                'html': 'true',
+                'title': d['time'],
+                'content': '<table><tr><td>' + 'TIME' + '</td><td> | ' + d['time'] + '</td></tr>' + '<tr><td>' + 'REMAIN' + '</td><td> | ' + d['remain'] + '</td></tr>' + '<tr><td>' + 'IN' + '</td><td> | ' + d['in'] + '</td></tr>' + '<tr><td>' + 'OUT' + '</td><td> | ' + d['out'] + '</td></tr></table>',
+                'trigger': 'hover'
+              })
+                  .popover('show');
             })
-            .popover('show');
-          })
-          .on("mouseout",  function (d) { 
-            d3.select(this).transition().duration(100).attr("r", '6px');
+            .on("mouseout",  function (d) {
+              d3.select(this).transition().duration(100).attr("r", '6px');
 
-            d3.selectAll('.tipDot').transition().duration(100).remove();
+              d3.selectAll('.tipDot').transition().duration(100).remove();
 
-            $(this).popover('destroy');
-          });
+              $(this).popover('destroy');
+            });
 
-          function xTransLen(t) {
-            return x(parseDate(t)) + tranLength;
-          }
+        function xTransLen(t) {
+          return x(parseDate(t)) + tranLength;
+        }
 
-          this.getOpt = function() {
-            var axisOpt = new Object();
-            axisOpt['x'] = x;
-            axisOpt['x1'] = x;
-            axisOpt['y'] = y;
-            axisOpt['xAxis'] = xAxis;
-            axisOpt['height'] = height;
-            axisOpt['axisNum'] = axisNum;
-            axisOpt['drawBar'] = drawBar;
+        this.getOpt = function() {
+          var axisOpt = new Object();
+          axisOpt['x'] = x;
+          axisOpt['x1'] = x;
+          axisOpt['y'] = y;
+          axisOpt['xAxis'] = xAxis;
+          axisOpt['height'] = height;
+          axisOpt['axisNum'] = axisNum;
+          axisOpt['drawBar'] = drawBar;
 
-            return axisOpt;
-          }
+          return axisOpt;
+        }
 
-          this.getSvg = function() {
-            var svgD = new Object();
-            svgD['svg'] = svg;
-            svgD['points'] = points;
-            svgD['stat'] = stat;
-            svgD['path'] = path;
-            svgD['line']  =line;
-            svgD['legendColor'] = legendColor;
+        this.getSvg = function() {
+          var svgD = new Object();
+          svgD['svg'] = svg;
+          svgD['points'] = points;
+          svgD['stat'] = stat;
+          svgD['path'] = path;
+          svgD['line']  =line;
+          svgD['legendColor'] = legendColor;
 
-            return svgD;
-          }
+          return svgD;
+        }
       }
 
       //redraw function
@@ -2926,59 +2932,59 @@ var demo = new Vue({
         line.x(function(d) { return xTransLen(d['time']); });
 
         svg.select("#count-x-axis")
-          .transition()
-          .duration(200)
-          .ease("sin-in-out")
-          .call(xAxis);
+            .transition()
+            .duration(200)
+            .ease("sin-in-out")
+            .call(xAxis);
 
         //update the stat bar
         stat = svg.selectAll(".countBpath")
-          .data(ddata)
-          .attr("transform", function(d) { return "translate(" + x(parseDate(d['time'])) + ",0)"; });
+            .data(ddata)
+            .attr("transform", function(d) { return "translate(" + x(parseDate(d['time'])) + ",0)"; });
 
         stat.selectAll(".countIORect")
-          .data(function(d) { return d.ages; })
-          .attr("width", x1.rangeBand())
-          .attr("x", function(d) { return x1(d['name']); })
-          .attr("y", function(d) { return y(d['value']); })
-          .attr("height", function(d) { return height - y(d['value']); })
-          .style("fill", function(d) { return legendColor[d['name']]; });
+            .data(function(d) { return d.ages; })
+            .attr("width", x1.rangeBand())
+            .attr("x", function(d) { return x1(d['name']); })
+            .attr("y", function(d) { return y(d['value']); })
+            .attr("height", function(d) { return height - y(d['value']); })
+            .style("fill", function(d) { return legendColor[d['name']]; });
 
         //append new bar
         stat = svg.selectAll(".countBpath")
-          .data(ddata)
-          .enter().append("g")
-          .attr("class", "countBpath")
-          .attr("transform", function(d) { return "translate(" + x(parseDate(d['time'])) + ",0)"; });
+            .data(ddata)
+            .enter().append("g")
+            .attr("class", "countBpath")
+            .attr("transform", function(d) { return "translate(" + x(parseDate(d['time'])) + ",0)"; });
 
         stat.selectAll(".countIORect")
-          .data(function(d) { return d.ages; })
-          .enter().append("rect")
-          .attr('class', 'countIORect')
-          .attr("width", x1.rangeBand())
-          .attr("x", function(d) { return x1(d['name']); })
-          .attr("y", function(d) { return y(d['value']); })
-          .attr("height", function(d) { return height - y(d['value']); })
-          .style("fill", function(d) { return legendColor[d['name']]; });
+            .data(function(d) { return d.ages; })
+            .enter().append("rect")
+            .attr('class', 'countIORect')
+            .attr("width", x1.rangeBand())
+            .attr("x", function(d) { return x1(d['name']); })
+            .attr("y", function(d) { return y(d['value']); })
+            .attr("height", function(d) { return height - y(d['value']); })
+            .style("fill", function(d) { return legendColor[d['name']]; });
 
         //remove the old bar
         stat.selectAll(".countIORect")
-          .data(function(d) { return d.ages; })
-          .exit()
-          .transition()
-          .duration(200)
-          .remove();
+            .data(function(d) { return d.ages; })
+            .exit()
+            .transition()
+            .duration(200)
+            .remove();
 
         //remove the path and redraw it, in order to confirm it display in front of other elements
         d3.selectAll('.countPath').remove();
 
         var path = svg.append("g")
-          .attr("class", "countPath"); 
+            .attr("class", "countPath");
 
         path.append("path")
-          .attr("d", line(ddata))
-          .attr("class", 'countRemainPath')
-          .attr('stroke', legendColor['remain']);
+            .attr("d", line(ddata))
+            .attr("class", 'countRemainPath')
+            .attr('stroke', legendColor['remain']);
 
         //update the path line
         // path.selectAll('.countRemainPath')
@@ -3000,36 +3006,36 @@ var demo = new Vue({
         d3.selectAll('.countPoints').remove();
 
         points = svg.append("g")
-          .attr("class", "countPoints");
+            .attr("class", "countPoints");
 
         points.selectAll(".tipCountPoints")
-          .data(ddata)
-          .enter().append("circle")
-          .attr("class", "tipCountPoints")
-          .attr("cx", function (d) { return xTransLen(d['time']); })
-          .attr("cy", function (d) { return y(d['remain']); })
-          .attr("r", "6px")
-          .on("mouseover", function (d) {
-            d3.select(this).transition().duration(100).attr("r", '8px');
+            .data(ddata)
+            .enter().append("circle")
+            .attr("class", "tipCountPoints")
+            .attr("cx", function (d) { return xTransLen(d['time']); })
+            .attr("cy", function (d) { return y(d['remain']); })
+            .attr("r", "6px")
+            .on("mouseover", function (d) {
+              d3.select(this).transition().duration(100).attr("r", '8px');
 
-            $(this).popover({
-              'container': 'body',
-              'placement': 'top',
-              'html': 'true',
-              'title': d['time'],
-              'content': '<table><tr><td>' + 'TIME' + '</td><td> | ' + d['time'] + '</td></tr>' + '<tr><td>' + 'REMAIN' + '</td><td> | ' + d['remain'] + '</td></tr>' + '<tr><td>' + 'IN' + '</td><td> | ' + d['in'] + '</td></tr>' + '<tr><td>' + 'OUT' + '</td><td> | ' + d['out'] + '</td></tr></table>',
-              'trigger': 'hover'
+              $(this).popover({
+                'container': 'body',
+                'placement': 'top',
+                'html': 'true',
+                'title': d['time'],
+                'content': '<table><tr><td>' + 'TIME' + '</td><td> | ' + d['time'] + '</td></tr>' + '<tr><td>' + 'REMAIN' + '</td><td> | ' + d['remain'] + '</td></tr>' + '<tr><td>' + 'IN' + '</td><td> | ' + d['in'] + '</td></tr>' + '<tr><td>' + 'OUT' + '</td><td> | ' + d['out'] + '</td></tr></table>',
+                'trigger': 'hover'
+              })
+                  .popover('show');
             })
-            .popover('show');
-          })
-          .on("mouseout",  function (d) { 
-            d3.select(this).transition().duration(100).attr("r", '6px');
+            .on("mouseout",  function (d) {
+              d3.select(this).transition().duration(100).attr("r", '6px');
 
-            d3.selectAll('.tipDot').transition().duration(100).remove();
+              d3.selectAll('.tipDot').transition().duration(100).remove();
 
-            $(this).popover('destroy');
-          });
-          
+              $(this).popover('destroy');
+            });
+
         //remove old dot
         // points.selectAll(".tipCountPoints")
         //   .data(ddata)
@@ -3041,7 +3047,7 @@ var demo = new Vue({
         function xTransLen(t) {
           return x(parseDate(t)) + tranLength;
         }
-        
+
       }
 
       //inits chart
@@ -3060,7 +3066,7 @@ var demo = new Vue({
         else {
           mAxis++;
         }
-        
+
         if (Object.keys(data).length === 30) data.shift();
 
         redraw(data, "#sensor-disk-multi-d3", sca.getOpt()['x'], sca.getOpt()['y'], sca.getOpt()['xAxis'], sca.getSvg()['svg'], sca.getSvg()['stat'], sca.getSvg()['path'], sca.getSvg()['line'], sca.getSvg()['points'], sca.getSvg()['legendColor'], sca.getOpt()['height'], sca.getOpt()['axisNum'], sca.getOpt()['drawBar']);
@@ -3099,93 +3105,93 @@ var demo = new Vue({
     legendRedraw: function (selectCate, id, legend, rect, legendSize, margin, height, width, color) {
       //update the scatter plot legend
       legend.selectAll('.docker_legend')
-        .data(selectCate)
+          .data(selectCate)
         // .transition()
         // .duration(200)
-        .attr('transform', function(d, i) {
-          return 'translate(' + ((5 + (width-20) / 5) * i + 5) + ',' + (height + margin.bottom - legendSize - 15) + ')';
-        })
+          .attr('transform', function(d, i) {
+            return 'translate(' + ((5 + (width-20) / 5) * i + 5) + ',' + (height + margin.bottom - legendSize - 15) + ')';
+          })
 
       legend.selectAll('rect')
-        .data(selectCate)
-        .style('fill', function(d) { 
-          return color(d);
-        });
+          .data(selectCate)
+          .style('fill', function(d) {
+            return color(d);
+          });
 
       legend.selectAll('text')
-        .data(selectCate)
-        .attr('x', legendSize*1.4)
-        .attr('y', legendSize/1.3)
-        .attr('font-size', function() {
-          if ($(id).width() > 415)
-            return '.9em';
-          else {
-            return '.55em';
-          }
-        })
-        .text(function(d) {
-          return d; 
-        });
+          .data(selectCate)
+          .attr('x', legendSize*1.4)
+          .attr('y', legendSize/1.3)
+          .attr('font-size', function() {
+            if ($(id).width() > 415)
+              return '.9em';
+            else {
+              return '.55em';
+            }
+          })
+          .text(function(d) {
+            return d;
+          });
 
       //create new legends
       var singLegend = legend.selectAll('.docker_legend')
-        .data(selectCate)
-        .enter()
-        .append('g')
-        .attr('class', 'docker_legend')
-        .attr('transform', function(d, i) {
-          return 'translate(' + ((5 + (width-20) / 5) * i + 5) + ',' + (height + margin.bottom - legendSize - 15) + ')';
-        });
+          .data(selectCate)
+          .enter()
+          .append('g')
+          .attr('class', 'docker_legend')
+          .attr('transform', function(d, i) {
+            return 'translate(' + ((5 + (width-20) / 5) * i + 5) + ',' + (height + margin.bottom - legendSize - 15) + ')';
+          });
 
       singLegend.append('rect')
-        .attr('width', legendSize)
-        .attr('height', legendSize)          
-        .style('fill', function(d) { 
-          return color(d);
-        });
+          .attr('width', legendSize)
+          .attr('height', legendSize)
+          .style('fill', function(d) {
+            return color(d);
+          });
 
       singLegend.append('text')
-        .attr('x', legendSize*1.4)
-        .attr('y', legendSize/1.3)
-        .attr('font-size', function() {
-          if ($(id).width() > 415)
-            return '.9em';
-          else {
-            return '.55em';
-          }
-        })
-        .text(function(d) { 
-          return d; 
-        });
+          .attr('x', legendSize*1.4)
+          .attr('y', legendSize/1.3)
+          .attr('font-size', function() {
+            if ($(id).width() > 415)
+              return '.9em';
+            else {
+              return '.55em';
+            }
+          })
+          .text(function(d) {
+            return d;
+          });
 
       //remove the old legends
       legend.selectAll('.docker_legend')
-        .data(selectCate)
-        .exit()
-        .remove();
+          .data(selectCate)
+          .exit()
+          .remove();
 
       //redraw the rect around the legend
       rect.selectAll('.legendRect')
-        .data(selectCate)
-        .attr('transform', function(d, i) {
-          return 'translate(' + ((5 + (width-20) / 5) * i) + ',' + (height + margin.bottom - legendSize - 20) + ')';
-        });
+          .data(selectCate)
+          .attr('transform', function(d, i) {
+            return 'translate(' + ((5 + (width-20) / 5) * i) + ',' + (height + margin.bottom - legendSize - 20) + ')';
+          });
 
       rect.selectAll('.legendRect')
-        .data(selectCate)
-        .enter()
-        .append('rect')
-        .attr('class', 'legendRect')
-        .attr('width', (width - 20) / 5)
-        .attr('height', legendSize + 10)
-        .attr('transform', function(d, i) {
-          return 'translate(' + ((5 + (width-20) / 5) * i) + ',' + (height + margin.bottom - legendSize - 20) + ')';
-        });
+          .data(selectCate)
+          .enter()
+          .append('rect')
+          .attr('class', 'legendRect')
+          .attr('width', (width - 20) / 5)
+          .attr('height', legendSize + 10)
+          .attr('transform', function(d, i) {
+            return 'translate(' + ((5 + (width-20) / 5) * i) + ',' + (height + margin.bottom - legendSize - 20) + ')';
+          });
 
       rect.selectAll('.legendRect')
-        .data(selectCate)
-        .exit()
-        .remove();
+          .data(selectCate)
+          .exit()
+          .remove();
     },
     displayDCPU: function () {
       var data = 55;
@@ -3204,15 +3210,15 @@ var demo = new Vue({
 
         for (var i=0; i<20; i++) {
           svg.append('rect')
-            .attr("width", (width - 84) / 20)
-            .attr("height", height * 0.55)
-            .attr('id', 'docker_cpu_rect_' + (i+1))
-            .attr('transform', "translate(" + (i * (width - 4) / 20) + ",0)" );
+              .attr("width", (width - 84) / 20)
+              .attr("height", height * 0.55)
+              .attr('id', 'docker_cpu_rect_' + (i+1))
+              .attr('transform', "translate(" + (i * (width - 4) / 20) + ",0)" );
         }
 
         var i=0;
         var temp = Math.floor(data / 5);
-        if (temp === 0 && data !== 0) 
+        if (temp === 0 && data !== 0)
           temp =1;
 
         for ( ; i < temp; i++) {
@@ -3222,14 +3228,14 @@ var demo = new Vue({
         for ( ; i<20; i++) {
           svg.select('#docker_cpu_rect_' + (i+1)).style('fill', '#f3f3f3');
         }
-        
+
         svg.selectAll('.dockerCpuText').remove();
 
         svg.append('text')
-          .attr('class', 'dockerCpuText')
-          .attr('x', 0)
-          .attr('y', height * 0.8 + margin.top)
-          .text(data + '%');
+            .attr('class', 'dockerCpuText')
+            .attr('x', 0)
+            .attr('y', height * 0.8 + margin.top)
+            .text(data + '%');
       }
 
       //redraw function
@@ -3237,7 +3243,7 @@ var demo = new Vue({
         //format of time data
         var i=0;
         var temp = Math.floor(data / 5);
-        if (temp === 0 && data !== 0) 
+        if (temp === 0 && data !== 0)
           temp =1;
 
         for ( ; i < temp; i++) {
@@ -3247,7 +3253,7 @@ var demo = new Vue({
         for ( ; i<20; i++) {
           d3.select('#docker_cpu_rect_' + (i+1)).style('fill', '#f3f3f3');
         }
-        
+
         d3.select('.dockerCpuText').text(data + '%');
       }
 
@@ -3341,112 +3347,113 @@ var demo = new Vue({
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         svg.append("g")
-          .attr("class", "x axis")
-          .attr("id", "memD-x-axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
+            .attr("class", "x axis")
+            .attr("id", "memD-x-axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
         svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
+            .attr("class", "y axis")
+            .call(yAxis);
 
         var path = svg.append("svg:path")
-          .datum(ddata)
-          .attr("class", "areaDM")
-          .attr("d", area);
+            .datum(ddata)
+            .attr("class", "areaDM")
+            .attr("d", area);
 
         var points = svg.selectAll(".gPoints")
-          .data(ddata)
-          .enter().append("g")
-          .attr("class", "gPoints");
+            .data(ddata)
+            .enter().append("g")
+            .attr("class", "gPoints");
 
         //legend rendering
         var legend = svg.append('g')
-          .attr('class', 'legend')
-          .attr('transform', 'translate(0,'+ (height + margin.bottom - legendSize * 1.2) +')');
+            .attr('class', 'legend')
+            .attr('transform', 'translate(0,'+ (height + margin.bottom - legendSize * 1.2) +')');
 
         legend.append('rect')
-          .attr('width', legendSize)
-          .attr('height', legendSize)                                   
-          .style('fill', legendColor);
-          
+            .attr('width', legendSize)
+            .attr('height', legendSize)
+            .style('fill', legendColor);
+
         legend.append('text')
-          .data(ddata)
-          .attr('x', legendSize*1.2)
-          .attr('y', legendSize/1.1)
-          .text('used');
+            .data(ddata)
+            .attr('x', legendSize*1.2)
+            .attr('y', legendSize/1.1)
+            .text('used');
 
         points.selectAll(".circle")
-          .data(ddata)
-          .enter().append("circle")
-          .attr("class", "memtipDPoints")
-          .attr("cx", function (d) { 
-            return x(d.time); 
-          })
-          .attr("cy", function (d) {
-            return y(d['used']/d['total']); 
-          })
-          .attr("r", "6px")
-          .on("mouseover", function (d) {
-            console.log(this);
-
-            d3.select(this).transition().duration(100).style("opacity", 1);
-
-            svg.append("g")
-              .append("line")
-              .attr("class", "tipDot")
-              .transition()
-              .duration(50)
-              .attr("x1", x(d['time']))
-              .attr("x2", x(d['time']))
-              .attr("y2", height);
-
-            svg.append("polyline")      // attach a polyline
-              .attr("class", "tipDot")  // colour the line
-              .style("fill", "black")     // remove any fill colour
-              .attr("points", (x(d['time'])-3.5)+","+(y(1)-2.5)+","+x(d['time'])+","+(y(1)+6)+","+(x(d['time'])+3.5)+","+(y(1)-2.5));
-
-            svg.append("polyline")      // attach a polyline
-              .attr("class", "tipDot")  // colour the line
-              .style("fill", "black")     // remove any fill colour
-              .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
-
-            $(this).tooltip({
-              'container': 'body',
-              'placement': 'left',
-              'title': 'Used' + ' | ' + formatPercent(d['used']/d['total']),
-              'trigger': 'hover'
+            .data(ddata)
+            .enter().append("circle")
+            .attr("class", "memtipDPoints")
+            .attr("cx", function (d) {
+              return x(d.time);
             })
-            .tooltip('show');
-          })
-          .on("mouseout",  function (d) { 
-            d3.select(this).transition().duration(100).style("opacity", 0);
+            .attr("cy", function (d) {
+              return y(d['used']/d['total']);
+            })
+            .attr("r", "6px")
+            .on("mouseover", function (d) {
+              console.log(this);
 
-            d3.selectAll('.tipDot').transition().duration(100).remove();
+              d3.select(this).transition().duration(100).style("opacity", 1);
 
-            $(this).tooltip('destroy');
-          });
+              svg.append("g")
+                  .attr("class", "tipDot")
+                  .append("line")
+                  .attr("class", "tipDot")
+                  .transition()
+                  .duration(50)
+                  .attr("x1", x(d['time']))
+                  .attr("x2", x(d['time']))
+                  .attr("y2", height);
 
-          this.getOpt = function() {
-            var axisOpt = new Object();
-            axisOpt['x'] = x;
-            axisOpt['y'] = y;
-            axisOpt['xAxis'] = xAxis;
-            axisOpt['width'] = width;
-            axisOpt['height'] = height;
+              svg.append("polyline")      // attach a polyline
+                  .attr("class", "tipDot")  // colour the line
+                  .style("fill", "black")     // remove any fill colour
+                  .attr("points", (x(d['time'])-3.5)+","+(y(1)-2.5)+","+x(d['time'])+","+(y(1)+6)+","+(x(d['time'])+3.5)+","+(y(1)-2.5));
 
-            return axisOpt;
-          }
+              svg.append("polyline")      // attach a polyline
+                  .attr("class", "tipDot")  // colour the line
+                  .style("fill", "black")     // remove any fill colour
+                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
 
-          this.getSvg = function() {
-            var svgD = new Object();
-            svgD['svg'] = svg;
-            svgD['points'] = points;
-            svgD['area'] = area;
-            svgD['path'] = path;
+              $(this).tooltip({
+                'container': 'body',
+                'placement': 'left',
+                'title': 'Used' + ' | ' + formatPercent(d['used']/d['total']),
+                'trigger': 'hover'
+              })
+                  .tooltip('show');
+            })
+            .on("mouseout",  function (d) {
+              d3.select(this).transition().duration(100).style("opacity", 0);
 
-            return svgD;
-          }
+              d3.selectAll('.tipDot').transition().duration(100).remove();
+
+              $(this).tooltip('destroy');
+            });
+
+        this.getOpt = function() {
+          var axisOpt = new Object();
+          axisOpt['x'] = x;
+          axisOpt['y'] = y;
+          axisOpt['xAxis'] = xAxis;
+          axisOpt['width'] = width;
+          axisOpt['height'] = height;
+
+          return axisOpt;
+        }
+
+        this.getSvg = function() {
+          var svgD = new Object();
+          svgD['svg'] = svg;
+          svgD['points'] = points;
+          svgD['area'] = area;
+          svgD['path'] = path;
+
+          return svgD;
+        }
       }
 
       //redraw function
@@ -3468,95 +3475,96 @@ var demo = new Vue({
         // svg.attr("width", $(id).width())
         //   .attr("height", $(id).height());
 
-        x.domain(d3.extent(ddata, function(d) { 
-          return d['time']; 
+        x.domain(d3.extent(ddata, function(d) {
+          return d['time'];
         }));
 
         xAxis.ticks(d3.time.minutes, Math.floor(data.length / axisNum));
 
         svg.select("#memD-x-axis")
-          .transition()
-          .duration(200)
-          .ease("sin-in-out")
-          .call(xAxis);
+            .transition()
+            .duration(200)
+            .ease("sin-in-out")
+            .call(xAxis);
 
         //area line updating
         path.datum(ddata)
-          .transition()
-          .duration(200)
-          .attr("class", "areaDM")
-          .attr("d", area);
+            .transition()
+            .duration(200)
+            .attr("class", "areaDM")
+            .attr("d", area);
 
         //circle updating
         points.selectAll(".memtipDPoints")
-          .data(ddata)
-          .attr("class", "memtipDPoints")
-          .attr("cx", function (d) { 
-            return x(d.time); 
-          })
-          .attr("cy", function (d) {
-            return y(d['used']/d['total']); 
-          })
-          .attr("r", "6px");
+            .data(ddata)
+            .attr("class", "memtipDPoints")
+            .attr("cx", function (d) {
+              return x(d.time);
+            })
+            .attr("cy", function (d) {
+              return y(d['used']/d['total']);
+            })
+            .attr("r", "6px");
 
         //draw new dot
         points.selectAll(".memtipDPoints")
-          .data(ddata)
-          .enter().append("circle")
-          .attr("class", "memtipDPoints")
-          .attr("cx", function (d) { 
-            return x(d.time); 
-          })
-          .attr("cy", function (d) {
-            return y(d['used']/d['total']); 
-          })
-          .attr("r", "6px")
-          .on("mouseover", function (d) {
-            d3.select(this).transition().duration(100).style("opacity", 1);
-
-            svg.append("g")
-              .append("line")
-              .attr("class", "tipDot")
-              .transition()
-              .duration(50)
-              .attr("x1", x(d['time']))
-              .attr("x2", x(d['time']))
-              .attr("y2", height);
-
-            svg.append("polyline")      // attach a polyline
-              .attr("class", "tipDot")  // colour the line
-              .style("fill", "black")     // remove any fill colour
-              .attr("points", (x(d['time'])-3.5)+","+(y(1)-2.5)+","+x(d['time'])+","+(y(1)+6)+","+(x(d['time'])+3.5)+","+(y(1)-2.5));
-
-            svg.append("polyline")      // attach a polyline
-              .attr("class", "tipDot")  // colour the line
-              .style("fill", "black")     // remove any fill colour
-              .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
-
-            $(this).tooltip({
-              'container': 'body',
-              'placement': 'left',
-              'title': 'Used' + ' | ' +formatPercent(d['used']/d['total']),
-              'trigger': 'hover'
+            .data(ddata)
+            .enter().append("circle")
+            .attr("class", "memtipDPoints")
+            .attr("cx", function (d) {
+              return x(d.time);
             })
-            .tooltip('show');
-          })
-          .on("mouseout",  function (d) { 
-            d3.select(this).transition().duration(100).style("opacity", 0);
+            .attr("cy", function (d) {
+              return y(d['used']/d['total']);
+            })
+            .attr("r", "6px")
+            .on("mouseover", function (d) {
+              d3.select(this).transition().duration(100).style("opacity", 1);
 
-            d3.selectAll('.tipDot').transition().duration(100).remove();
+              svg.append("g")
+                  .attr("class", "tipDot")
+                  .append("line")
+                  .attr("class", "tipDot")
+                  .transition()
+                  .duration(50)
+                  .attr("x1", x(d['time']))
+                  .attr("x2", x(d['time']))
+                  .attr("y2", height);
 
-            $(this).tooltip('destroy');
-          });
+              svg.append("polyline")      // attach a polyline
+                  .attr("class", "tipDot")  // colour the line
+                  .style("fill", "black")     // remove any fill colour
+                  .attr("points", (x(d['time'])-3.5)+","+(y(1)-2.5)+","+x(d['time'])+","+(y(1)+6)+","+(x(d['time'])+3.5)+","+(y(1)-2.5));
+
+              svg.append("polyline")      // attach a polyline
+                  .attr("class", "tipDot")  // colour the line
+                  .style("fill", "black")     // remove any fill colour
+                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
+
+              $(this).tooltip({
+                'container': 'body',
+                'placement': 'left',
+                'title': 'Used' + ' | ' +formatPercent(d['used']/d['total']),
+                'trigger': 'hover'
+              })
+                  .tooltip('show');
+            })
+            .on("mouseout",  function (d) {
+              d3.select(this).transition().duration(100).style("opacity", 0);
+
+              d3.selectAll('.tipDot').transition().duration(100).remove();
+
+              $(this).tooltip('destroy');
+            });
 
         //remove old dot
         points.selectAll(".memtipDPoints")
-          .data(ddata)
-          .exit()
-          .transition()
-          .duration(200)
-          .remove();
-        
+            .data(ddata)
+            .exit()
+            .transition()
+            .duration(200)
+            .remove();
+
       }
 
       //inits chart
@@ -3575,7 +3583,7 @@ var demo = new Vue({
         else {
           mAxis++;
         }
-        
+
         if (Object.keys(data).length === 60) data.shift();
 
         // generate(data, "#docker-mem-area-d3");
