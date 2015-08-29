@@ -2172,7 +2172,7 @@ var demo = new Vue({
         else
           durTime = (maxTime - minTime) / 60000;
 
-        console.log(durTime);
+        // console.log(durTime);
 
         d3.selectAll('.svg_timeline').remove();
 
@@ -2656,7 +2656,7 @@ var demo = new Vue({
         // arc.outerRadius(function (d) {
         //   return (r - ir) * (d.data.value / mAxis) + ir;
         // });
-        console.log("I am updating the drawing work.");
+        // console.log("I am updating the drawing work.");
 
         path.data(pie(data))
             .transition()
@@ -3327,7 +3327,7 @@ var demo = new Vue({
           return temp;
         })();
 
-        console.log(ddata);
+        // console.log(ddata);
 
         x.domain(d3.extent(ddata, function(d) { return d.time; }));
 

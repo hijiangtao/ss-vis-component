@@ -157,7 +157,7 @@
             //
 
 //            var pMate = new THREE.PointCloudMaterial( { size: 50, vertexColors: THREE.VertexColors, map: pTexture } );
-            var pMate = new THREE.PointCloudMaterial( { size: 500, map: pTexture, vertexColors: THREE.VertexColors, blending: THREE.AdditiveBlending, depthTest: false, transparent : true  } );
+            var pMate = new THREE.PointCloudMaterial( { size: 500, map: pTexture, vertexColors: THREE.VertexColors, blending: THREE.AdditiveAlpha, depthTest: false, transparent : true  } );
 
             particleSystem = new THREE.PointCloud( geometry, pMate );
 
@@ -224,6 +224,9 @@
         }
 
         function render() {
+//            particleSystem.rotation.x += 0.001;
+//            particleSystem.rotation.y += 0.0008;
+
             renderer.enableScissorTest( false );
             renderer.clear();
             renderer.enableScissorTest( true );
