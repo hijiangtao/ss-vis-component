@@ -5,7 +5,28 @@
     <title>Three Cubes Test</title>
 
     <style>
-        body{padding:0px; margin:0px;}
+        body{
+            padding:0px;
+            margin:0px;
+            overflow: hidden;
+            color: #ffffff;
+            background-color: #000000;
+        }
+
+        #info {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            horiz-align: center;
+        }
+        #info h3 {
+            font-weight: bold;
+            color: greenyellow;
+        }
     </style>
 </head>
 <body>
@@ -27,12 +48,15 @@
 
         var camera, scene, controls, renderer;
 
+        var judChange = 0;
+
         init();
         animate();
         
         function init() {
 
             container = document.createElement( 'div' );
+
             document.body.appendChild( container );
 
             renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -40,7 +64,7 @@
             //
 
             camera = new THREE.PerspectiveCamera( 45, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 25000 );
-            camera.position.z = 4800;
+            camera.position.z = 4500;
 
             scene = new THREE.Scene();
 
@@ -56,10 +80,10 @@
 
             var maxAnisotropy = renderer.getMaxAnisotropy();
 
-            var texture = THREE.ImageUtils.loadTexture( "img/dg.jpg" );
-            var pTexture = THREE.ImageUtils.loadTexture( "img/rss.png" );
+            var texture = THREE.ImageUtils.loadTexture( "img/TextureMap.png" );
+            var pTexture = THREE.ImageUtils.loadTexture( "img/flag.png" );
 
-            var material = new THREE.MeshPhongMaterial( { color: 0xbbbbbb, map: texture } );
+            var material = new THREE.MeshPhongMaterial( { color: 0xffffff, map: texture } );
 
             texture.anisotropy = maxAnisotropy;
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -74,11 +98,11 @@
 
             //Particles
 
-            var particles = 200;
+            var particles = 50;
 
             var geometry = new THREE.BufferGeometry();
 
-            var positions = new Float32Array( particles * 3 );
+            positions = new Float32Array( particles * 3 );
             var colors = new Float32Array( particles * 3 );
 
 
@@ -92,7 +116,7 @@
 
                 var x = Math.random() * n - n2;
                 var y = (Math.random() * n - n2) / 2;
-                var z = 20;
+                var z = 1.6;
 
                 positions[ i ]     = x;
                 positions[ i + 1 ] = y;
@@ -112,38 +136,38 @@
 
                 //line setting
 
-                var lGeo = new THREE.BufferGeometry();
-                var lMate = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors, linewidth: 0.2 });
-                var lPos = new Float32Array( 6 );
-                var lColo = new Float32Array( 6 );
+//                var lGeo = new THREE.BufferGeometry();
+//                var lMate = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors, linewidth: 0.2 });
+//                var lPos = new Float32Array( 6 );
+//                var lColo = new Float32Array( 6 );
+//
+//                var j = 0;
+//                lPos[ j ]     = x;
+//                lPos[ j + 1 ] = y;
+//                lPos[ j + 2 ] = z;
+//                lPos[ j + 3 ] = x;
+//                lPos[ j + 4 ] = y;
+//                lPos[ j + 5 ] = 0;
+//
+//                lColo[ j ]     = color.r;
+//                lColo[ j + 1 ] = color.g;
+//                lColo[ j + 2 ] = color.b;
+//                lColo[ j + 3 ] = color.r;
+//                lColo[ j + 4 ] = color.g;
+//                lColo[ j + 5 ] = color.b;
+//
+//                //lines drawing
+//
+//                lGeo.addAttribute( 'position', new THREE.BufferAttribute( lPos, 3 ) );
+//                lGeo.addAttribute( 'color', new THREE.BufferAttribute( lColo, 3 ) );
+//
+//                lGeo.computeBoundingSphere();
+//
+//                var lMesh = new THREE.Line( lGeo, lMate );
+//                lMesh.rotation.x = - Math.PI / 4;
+//                lMesh.scale.set( 25, 25, 25 );
 
-                var j = 0;
-                lPos[ j ]     = x;
-                lPos[ j + 1 ] = y;
-                lPos[ j + 2 ] = z;
-                lPos[ j + 3 ] = x;
-                lPos[ j + 4 ] = y;
-                lPos[ j + 5 ] = 0;
-
-                lColo[ j ]     = color.r;
-                lColo[ j + 1 ] = color.g;
-                lColo[ j + 2 ] = color.b;
-                lColo[ j + 3 ] = color.r;
-                lColo[ j + 4 ] = color.g;
-                lColo[ j + 5 ] = color.b;
-
-                //lines drawing
-
-                lGeo.addAttribute( 'position', new THREE.BufferAttribute( lPos, 3 ) );
-                lGeo.addAttribute( 'color', new THREE.BufferAttribute( lColo, 3 ) );
-
-                lGeo.computeBoundingSphere();
-
-                var lMesh = new THREE.Line( lGeo, lMate );
-                lMesh.rotation.x = - Math.PI / 4;
-                lMesh.scale.set( 25, 25, 25 );
-
-                scene.add( lMesh );
+//                scene.add( lMesh );
 
             }
 
@@ -156,8 +180,8 @@
 
             //
 
-//            var pMate = new THREE.PointCloudMaterial( { size: 50, vertexColors: THREE.VertexColors, map: pTexture } );
-            var pMate = new THREE.PointCloudMaterial( { size: 500, map: pTexture,  blending: THREE.AdditiveAlpha, depthTest: false, transparent : true  } );
+//            var pMate = new THREE.PointCloudMaterial( { size: 200, map: pTexture, vertexColors: THREE.VertexColors, blending: THREE.Additive, depthTest: false, transparent : true  } );
+            var pMate = new THREE.PointCloudMaterial( { size: 200, map: pTexture, blending: THREE.AdditiveAlpha, depthTest: false, transparent : true  } );
 
             particleSystem = new THREE.PointCloud( geometry, pMate );
 
@@ -166,11 +190,13 @@
 
             scene.add( particleSystem );
 
+            console.log(particleSystem.geometry);
+
             scene.add( mesh );
 
-            object = new THREE.AxisHelper( 500 );
+            object = new THREE.AxisHelper( 1000 );
             object.position.set( 0, 0, 0 );
-            scene.add( object );
+//            scene.add( object );
 
             //controls
 
@@ -214,8 +240,39 @@
 
 
         function animate() {
+            judChange++;
 
             requestAnimationFrame( animate );
+
+            if (judChange == 10) {
+                for ( var i = 0; i < positions.length; i += 3 ) {
+
+                    // positions
+
+                    var x = (Math.random() - 0.5) * 2;
+                    var y = (Math.random() - 0.5);
+                    var z = 1.6;
+
+                    positions[ i ]     += x;
+                    positions[ i + 1 ] += y;
+                    positions[ i + 2 ]  = z;
+
+                    if ( positions[ i ] < -100 )
+                        positions[ i ] += 10;
+                    else if ( positions[ i ] > 100 )
+                        positions[ i ] -= 10;
+
+                    if ( positions[ i + 1 ] < -50 )
+                        positions[ i + 1 ] += 10;
+                    else if ( positions[ i + 1 ] > 50 )
+                        positions[ i + 1 ] -= 10;
+                }
+
+                particleSystem.geometry.attributes.position.needsUpdate = true;
+
+                judChange = 0;
+            }
+
             controls.update();
 
             render();
@@ -224,18 +281,18 @@
         }
 
         function render() {
-//            particleSystem.rotation.x += 0.001;
-//            particleSystem.rotation.y += 0.0008;
 
             renderer.enableScissorTest( false );
             renderer.clear();
             renderer.enableScissorTest( true );
 
             renderer.setScissor( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
-            pointLight.position.set(camera.position.x,camera.position.y,camera.position.z);
+            pointLight.position.set(camera.position.x, camera.position.y, camera.position.z);
 
             renderer.render( scene, camera );
         }
     </script>
+
+    <div id="info"><h3>Single Monitor People Tracking Monitor</h3></div>
 </body>
 </html>
