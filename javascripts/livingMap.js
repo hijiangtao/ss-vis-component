@@ -28,11 +28,12 @@ var demo = new Vue({
 
             function init() {
 
-                container = document.createElement( 'div' );
+                container = document.getElementById('livingmap');
 
-                document.body.appendChild( container );
 
-                $('div').attr('id', 'three-canvas');
+                //document.body.appendChild( container );
+
+                //$('div').attr('id', 'three-canvas');
 
                 renderer = new THREE.WebGLRenderer( { antialias: true } );
 
@@ -175,7 +176,7 @@ var demo = new Vue({
 
                 //controls
 
-                controls = new THREE.TrackballControls( camera );
+                controls = new THREE.TrackballControls( camera, container );
 
                 controls.rotateSpeed = 1.0;
                 controls.zoomSpeed = 1.2;
