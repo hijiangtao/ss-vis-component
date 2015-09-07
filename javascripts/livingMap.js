@@ -40,8 +40,8 @@ var demo = new Vue({
                 //
 
                 camera = new THREE.PerspectiveCamera( 45, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 25000 );
-                camera.position.z = 4500;
-                camera.position.y = -3000;
+                camera.position.z = 3500;
+                camera.position.y = -2500;
                 //camera.rotation.z = Math.PI / 4;
 
                 scene = new THREE.Scene();
@@ -77,7 +77,7 @@ var demo = new Vue({
 
                 //Particles
 
-                var particles = 50;
+                var particles = 20;
 
                 var geometry = new THREE.BufferGeometry();
 
@@ -170,13 +170,18 @@ var demo = new Vue({
                 //particleSystem.rotation.x = - Math.PI / 4;
 
                 particleSystem2 = new THREE.PointCloud( geometry, pMate );
+                particleSystem3 = new THREE.PointCloud( geometry, pMate );
 
                 particleSystem2.position.set( -1800, 500, 0);
                 particleSystem2.scale.set( 5, 5, 5 );
                 particleSystem2.rotation.z = Math.PI / 4;
                 //particleSystem2.rotation.x = - Math.PI / 4;
+                particleSystem3.position.set( 500, -600, 0);
+                particleSystem3.scale.set( 5, 5, 5 );
+                particleSystem3.rotation.z = - Math.PI / 3;
 
                 scene.add( particleSystem2 );
+                scene.add( particleSystem3 );
 
                 //0907 END
 
@@ -188,7 +193,7 @@ var demo = new Vue({
 
                 object = new THREE.AxisHelper( 1000 );
                 object.position.set( 1000, 0, 0 );
-                scene.add( object );
+                //scene.add( object );
 
                 //controls
 
