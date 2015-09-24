@@ -58,7 +58,7 @@ var demo = new Vue({
 
                 var maxAnisotropy = renderer.getMaxAnisotropy();
 
-                var texture = THREE.ImageUtils.loadTexture( "img/dg.jpg" );
+                var texture = THREE.ImageUtils.loadTexture( "img/TextureMap.png" );
                 var pTexture = THREE.ImageUtils.loadTexture( "img/flag.png" );
 
                 var material = new THREE.MeshPhongMaterial( { color: 0xffffff, map: texture } );
