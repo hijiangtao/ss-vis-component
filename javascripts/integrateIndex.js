@@ -1,5 +1,4 @@
-var test;
-
+// Vue component define
 var demo = new Vue({
   el: '#table',
   data: {
@@ -334,7 +333,7 @@ var demo = new Vue({
           mAxis++;
         }
 
-        if (Object.keys(data).length === 60) data.shift();
+        if (Object.keys(data).length === 20) data.shift();
 
         // generate(data, "#sensor-mem-area-d3");
         redraw(data, "#sensor-mem-area-d3", sca.getOpt()['x'], sca.getOpt()['y'], sca.getOpt()['xAxis'], sca.getSvg()['svg'], sca.getSvg()['area'], sca.getSvg()['path'], sca.getSvg()['points'], sca.getOpt()['height'], 8);
@@ -661,7 +660,7 @@ var demo = new Vue({
           mAxis++;
         }
 
-        if (Object.keys(data).length === 60) data.shift();
+        if (Object.keys(data).length === 15) data.shift();
 
         redraw(data, "#sensor-docker-scatterplot-d3", self.sensorDockerFunc.getSvg()['svg'], self.sensorDockerFunc.getSvg()['dots'], self.sensorDockerFunc.getSvg()['color'], self.sensorDockerFunc.getOpt()['x'], self.sensorDockerFunc.getOpt()['xAxis'], self.sensorDockerFunc.getOpt()['y'], self.sensorDockerFunc.getOpt()['r'], self.sensorDockerFunc, 5);
       }, 6000);
@@ -1290,7 +1289,7 @@ var demo = new Vue({
           mAxis++;
         }
 
-        if (Object.keys(data).length === 60) data.shift();
+        if (Object.keys(data).length === 20) data.shift();
 
         redraw(data, "#sensor-net-area-d3", sca.getOpt()['x'], sca.getOpt()['y'], sca.getOpt()['xAxis'], sca.getSvg()['svg'], sca.getSvg()['area'], sca.getSvg()['path'], sca.getSvg()['points'], sca.getSvg()['legendColor'], sca.getOpt()['height'], 6);
       }, 3500);
@@ -1849,7 +1848,7 @@ var demo = new Vue({
           mAxis++;
         }
 
-        if (Object.keys(data).length === 60) data.shift();
+        if (Object.keys(data).length === 20) data.shift();
 
         redraw(data, "#sensor-disk-multi-d3", sca.getOpt()['x'], sca.getOpt()['y'], sca.getOpt()['xAxis'], sca.getSvg()['svg'], sca.getSvg()['area'], sca.getSvg()['line'], sca.getSvg()['path'], sca.getSvg()['lpath'], sca.getSvg()['points'], sca.getSvg()['legendColor'], sca.getOpt()['height'], 6);
       }, 3000);
@@ -2520,7 +2519,7 @@ var demo = new Vue({
           }
         }
 
-        //append new data into existing json dataset
+        // append new data into existing json dataset
         // var randNum = Math.floor(Math.random()*2);
         var randNum = 1;
 
@@ -3067,7 +3066,7 @@ var demo = new Vue({
           mAxis++;
         }
 
-        if (Object.keys(data).length === 30) data.shift();
+        if (Object.keys(data).length === 18) data.shift();
 
         redraw(data, "#sensor-disk-multi-d3", sca.getOpt()['x'], sca.getOpt()['y'], sca.getOpt()['xAxis'], sca.getSvg()['svg'], sca.getSvg()['stat'], sca.getSvg()['path'], sca.getSvg()['line'], sca.getSvg()['points'], sca.getSvg()['legendColor'], sca.getOpt()['height'], sca.getOpt()['axisNum'], sca.getOpt()['drawBar']);
       }, 3000);
@@ -3584,7 +3583,7 @@ var demo = new Vue({
           mAxis++;
         }
 
-        if (Object.keys(data).length === 60) data.shift();
+        if (Object.keys(data).length === 20) data.shift();
 
         // generate(data, "#docker-mem-area-d3");
         redraw(data, "#docker-mem-area-d3", sca.getOpt()['x'], sca.getOpt()['y'], sca.getOpt()['xAxis'], sca.getSvg()['svg'], sca.getSvg()['area'], sca.getSvg()['path'], sca.getSvg()['points'], sca.getOpt()['height'], 8);

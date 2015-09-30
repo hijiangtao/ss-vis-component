@@ -412,7 +412,11 @@
 
         var svgD = $('#axis')[0];
 
+//        var randomDraw = 0;
+
         for (var x = -10; x <= 10; x++) {
+//            if (randomDraw++ % 2 == 0) break;
+
             for (var y = -10; y <= 10; y++) {
                 var z = Math.pow(x, 2) + Math.pow(y, 2);
                 var point = document.createElement('figure');
