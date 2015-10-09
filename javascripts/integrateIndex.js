@@ -1212,25 +1212,27 @@ var demo = new Vue({
                     .tooltip('show');
               });
 
+              // console.log("the correct xaxis is: ", currentX, 'but the output is ', x(d['time']), '$this object is: ', $(this)[0]['cx']['animVal']['value']);
+
               svg.append("g")
                   .attr("class", "tipDot")
                   .append("line")
                   .attr("class", "tipDot")
                   .transition()
                   .duration(50)
-                  .attr("x1", x(d['time']))
-                  .attr("x2", x(d['time']))
+                  .attr("x1", $(this)[0]['cx']['animVal']['value'])
+                  .attr("x2", $(this)[0]['cx']['animVal']['value'])
                   .attr("y2", height);
 
               svg.append("polyline")
                   .attr("class", "tipDot")
                   .style("fill", "black")
-                  .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
+                  .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(0-2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(0+6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(0-2.5));
 
               svg.append("polyline")
                   .attr("class", "tipDot")
                   .style("fill", "black")
-                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
+                  .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
 
               $(this).tooltip({
                 'container': 'body',
@@ -1504,7 +1506,7 @@ var demo = new Vue({
 
               d3.select(this).transition().duration(100).style("opacity", 1);
 
-              var ret = $('circle').filter(function(index) {
+              var ret = $('.tipPoints').filter(function(index) {
                 return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
               });
 
@@ -1576,7 +1578,7 @@ var demo = new Vue({
 
               d3.select(this).transition().duration(100).style("opacity", 0);
 
-              var ret = $('circle').filter(function(index) {
+              var ret = $('.tipPoints').filter(function(index) {
                 return ($(this)[0]['cx']['animVal']['value'] === currentX);
               });
 
@@ -1736,7 +1738,7 @@ var demo = new Vue({
 
               d3.select(this).transition().duration(100).style("opacity", 1);
 
-              var ret = $('circle').filter(function(index) {
+              var ret = $('.tipPoints').filter(function(index) {
                 return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
               });
 
@@ -1777,19 +1779,19 @@ var demo = new Vue({
                   .attr("class", "tipDot")
                   .transition()
                   .duration(50)
-                  .attr("x1", x(d['time']))
-                  .attr("x2", x(d['time']))
+                  .attr("x1", currentX)
+                  .attr("x2", currentX)
                   .attr("y2", height);
 
               svg.append("polyline")
                   .attr("class", "tipDot")
                   .style("fill", "black")
-                  .attr("points", (x(d['time'])-3.5)+","+(0-2.5)+","+x(d['time'])+","+(0+6)+","+(x(d['time'])+3.5)+","+(0-2.5));
+                  .attr("points", (currentX-3.5)+","+(0-2.5)+","+currentX+","+(0+6)+","+(currentX+3.5)+","+(0-2.5));
 
               svg.append("polyline")
                   .attr("class", "tipDot")
                   .style("fill", "black")
-                  .attr("points", (x(d['time'])-3.5)+","+(y(0)+2.5)+","+x(d['time'])+","+(y(0)-6)+","+(x(d['time'])+3.5)+","+(y(0)+2.5));
+                  .attr("points", (currentX-3.5)+","+(y(0)+2.5)+","+currentX+","+(y(0)-6)+","+(currentX+3.5)+","+(y(0)+2.5));
 
               $(this).tooltip({
                 'container': 'body',
@@ -1804,7 +1806,7 @@ var demo = new Vue({
 
               d3.select(this).transition().duration(100).style("opacity", 0);
 
-              var ret = $('circle').filter(function(index) {
+              var ret = $('.tipPoints').filter(function(index) {
                 return ($(this)[0]['cx']['animVal']['value'] === currentX);
               });
 
