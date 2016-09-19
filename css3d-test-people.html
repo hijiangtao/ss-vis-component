@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSS3D People Test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" type="text/css" href='stylesheets/bootstrap.min.css'>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            position:absolute;
+            bottom: 0px;
+            right: 0px;
+        }
+        nav button {
+            fill: white;
+            color: black;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            font-family: Trebuchet MS;
+            background: #191919;
+            user-select: none;
+        }
+
+        main {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            overflow: hidden;
+        }
+
+        article {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1250px;
+        }
+        article.pan { cursor: -webkit-grab; }
+        article.rotate { cursor: pointer; }
+        article.zoom { cursor: n-resize; }
+
+        #perspective {
+            margin-top: 100px;
+            width: 0;
+            height: 0;
+            transform-style: preserve-3d;
+            transform: rotateX(-20deg) rotateY(-45deg);
+        }
+        #perspective.reset {
+            transition: transform 1s ease-in-out;
+        }
+
+        rect {
+            stroke: white;
+            stroke-width: 1px;
+            fill: transparent;
+        }
+        line {
+            stroke: white;
+            stroke-width: 1px;
+            /*transform-style: preserve-3d;
+            transform: rotateX(90deg);*/
+        }
+
+        #axis, #graph {
+            margin-top: -6px;
+            width: 0;
+            height: 0;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(90deg);
+        }
+
+        #axis #X #Y #Z { opacity: 0.4; }
+
+        #X, #Y, #Z, #X div, #Y div, #Z div, .point, .point div {
+            width: 2px;
+            height: 2px;
+            position: absolute;
+        }
+
+        #X, #Y, #Z, .point {
+            top: -1px;
+            left: -1px;
+            transform-style: preserve-3d;
+        }
+
+        #X { transform: translateX(1px) rotateY( 90deg); }
+        #Y { transform: translateY(1px) rotateX(-90deg); }
+        #Z { transform: translateZ(1px); }
+
+        #X div { background: #f56931; }
+        #Y div { background: #27c26f; }
+        #Z div { background: #31bdf5; }
+        .projLine{
+            top: -1px;
+            left: -1px;
+            transform-style: preserve-3d;
+            transform: translateZ(1px);
+            height: 60px;
+        }
+        .projLine div {
+            background: #31bdf5;
+        }
+
+        #X .front,  #Y .front,  #Z .front  .projLine .front { transform: translateZ(500px) rotateY(0deg); }
+        #X .back,   #Y .back,   #Z .back   .projLine .back  { transform: rotateY(180deg); }
+        #X .left,   #Y .left,   #Z .left   { width:  500px; transform: translate3d(-250px, 0, 250px) rotateY(-90deg); }
+        #X .right,  #Y .right,  #Z .right  { width:  500px; transform: translate3d(-248px, 0, 250px) rotateY( 90deg); }
+        #X .top,    #Y .top,    #Z .top    { height: 500px; transform: translate3d(0, -250px, 250px) rotateX( 90deg); }
+        #X .bottom, #Y .bottom, #Z .bottom { height: 500px; transform: translate3d(0, -248px, 250px) rotateX(-90deg); }
+
+        .projLine .left   { width:  60px; transform: translate3d(-250px, 0, 250px) rotateY(-90deg); }
+        .projLine .right  { width:  60px; transform: translate3d(-248px, 0, 250px) rotateY( 90deg); }
+        .projLine .top    { height: 60px; transform: translate3d(0, -250px, 250px) rotateX( 90deg); }
+        .projLine .bottom { height: 60px; transform: translate3d(0, -248px, 250px) rotateX(-90deg); }
+
+        .point div { background: tomato; }
+
+        .point .front  { transform: translateZ( 1px) rotateY(  0deg); }
+        .point .back   { transform: translateZ(-1px) rotateY(180deg); }
+        .point .left   { transform: translateX(-1px) rotateY(-90deg); }
+        .point .right  { transform: translateX( 1px) rotateY( 90deg); }
+        .point .top    { transform: translateY(-1px) rotateX( 90deg); }
+        .point .bottom { transform: translateY( 1px) rotateX(-90deg); }
+
+        label {
+            position: absolute;
+            color: #999;
+        }
+        #info {
+            padding: 10px;
+            font-size: 50px;
+            cursor: pointer;
+        }
+        aside {
+            padding: 28px 10px;
+            position: absolute;
+            left: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #info:hover ~ aside {
+            opacity: 1;
+        }
+        p {
+            padding: 5px;
+            font-size: 16px;
+            color: #aaa;
+        }
+        p:first-child {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        button {
+            margin: 10px 5px;
+            padding: 5px 10px;
+            border: solid 1px #999;
+            border-radius: 5px;
+            font: 18px Trebuchet MS;
+            color: #999;
+            background: transparent;
+            cursor: pointer;
+            outline: none;
+        }
+        button:hover {
+            border-color: #aaa;
+            color: #aaa;
+        }
+        button:active, button.selected {
+            color: #eee;
+        }
+        #menu {
+            margin: 15px;
+            margin-bottom: 10px;
+            padding: 20px;
+            width: 100%;
+            height: 500px;
+            text-align: center;
+            font: 18px Trebuchet MS;
+            color: #999;
+            background: #272727;
+        }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-thumb {
+            border-right: solid 5px #222;
+            background: #5f5f5f;
+        }
+
+        .bgImg img {
+            transform: scale3d(1, 1, 1) translate3d(-1000px, -550px, 0);
+        }
+    </style>
+</head>
+<body>
+    <div >
+        <main>
+            <article>
+                <section>
+
+                </section>
+                <section id="perspective">
+                    <section id="axis">
+                        <figure class='bgImg'>
+                            <img src="img/TextureMap.png">
+                        </figure>
+                        <figure id="X">
+                            <div class="front"></div>
+                            <div class="back"></div>
+                            <div class="left"></div>
+                            <div class="right"></div>
+                            <div class="top"></div>
+                            <div class="bottom"></div>
+                        </figure>
+                        <figure id="Y">
+                            <div class="front"></div>
+                            <div class="back"></div>
+                            <div class="left"></div>
+                            <div class="right"></div>
+                            <div class="top"></div>
+                            <div class="bottom"></div>
+                        </figure>
+                        <figure id="Z">
+                            <div class="front"></div>
+                            <div class="back"></div>
+                            <div class="left"></div>
+                            <div class="right"></div>
+                            <div class="top"></div>
+                            <div class="bottom"></div>
+                        </figure>
+                    </section>
+                    <section id="graph"></section>
+                </section>
+            </article>
+            <nav>
+                <button onmousedown="select(this)">Pan</button>
+                <button onmousedown="select(this)">Rotate</button>
+                <button onmousedown="select(this)">Zoom</button>
+                <button onmousedown="resetViewport()">Reset viewport</button>
+                <!--<section id="menu">Your menu</section>-->
+            </nav>
+            <!--<label>‹</label>-->
+
+        </main>
+    </div>
+
+    <script src='javascripts/jquery.min.js'></script>
+    <script src='javascripts/bootstrap.min.js'></script>
+
+    <script src="javascripts/Detector.js"></script>
+    <script src="javascripts/stats.min.js"></script>
+
+    <script type="text/javascript">
+        var $ = document.querySelectorAll.bind(document);
+
+        /* -------------------------------- */
+        /* ---------- Navigation ---------- */
+        /* -------------------------------- */
+        var article = $('article')[0];
+        var perspective = $('#perspective')[0];
+        var buttons = $('button');
+
+        var click = false;
+        var cursor = { x: 0, y: 0 };
+        var transform = {
+            position: { x: 0, y: 0 },
+            rotation: { x: 0, y: 0 },
+            zoom: 0
+        };
+        var target = {
+            position: { x: 0, y: 0 },
+            rotation: { x: -20, y: -45 },
+            zoom: 100
+        };
+        var targetOnDown = {
+            position: { x: 0, y: 0 },
+            rotation: { x: 0, y: 0 },
+            zoom: 0
+        };
+
+        article.onmousedown = function(e) {
+            if (e.which < 3) {
+                if (e.which == 2) article.className = 'pan';
+                if (article.className == 'pan')
+                    article.style.cursor = '-webkit-grabbing';
+                cursor.x = e.pageX;
+                cursor.y = e.pageY;
+                targetOnDown.position.x = target.position.x;
+                targetOnDown.position.y = target.position.y;
+                targetOnDown.rotation.x = target.rotation.x;
+                targetOnDown.rotation.y = target.rotation.y;
+                targetOnDown.zoom = target.zoom;
+                click = true;
+            }
+        };
+        article.onmousemove = function(e) {
+            if (click) {
+                switch (article.className) {
+                    case 'pan':    target.position.x = targetOnDown.position.x + e.pageX - cursor.x;
+                        target.position.y = targetOnDown.position.y + e.pageY - cursor.y;
+                        break;
+
+                    case 'rotate': target.rotation.x = targetOnDown.rotation.x - (e.pageY - cursor.y) * 0.3;
+                        target.rotation.y = targetOnDown.rotation.y + (e.pageX - cursor.x) * 0.3;
+                        break;
+
+                    case 'zoom':   target.zoom = targetOnDown.zoom - (e.pageY - cursor.y) * 0.4;
+                        if (target.zoom < 50) target.zoom = 50;
+                        break;
+                }
+            }
+        };
+        article.onmouseup = function(e) {
+            click = false;
+            if (article.className == 'pan')
+                article.style.cursor = '';
+            if (e.which == 2) returnValue();
+        };
+
+        onkeydown = function(e) {
+            if (e.altKey) article.className = 'rotate';
+        };
+        onkeyup = function(e) {
+            if (e.keyCode == 18) returnValue();
+        };
+
+        article.addEventListener('mousewheel', scroll, false);
+        article.addEventListener('DOMMouseScroll', scroll, false);
+        function scroll(e) {
+            e.preventDefault();
+            var delta = (e.wheelDelta) ? e.wheelDelta : - e.detail;
+            target.zoom += (delta > 0) ? 15 : -15;
+            if (target.zoom < 50) target.zoom = 50;
+        }
+
+        function select(button) {
+            [].forEach.call(buttons, function(b) { if (b != button) b.removeAttribute('class'); });
+            (button.className) ? button.removeAttribute('class') : button.className = 'selected';
+            switch (button.innerHTML) {
+                case 'Pan': (article.className == 'pan') ? article.removeAttribute('class') : article.className = 'pan'; break;
+                case 'Rotate': (article.className == 'rotate') ? article.removeAttribute('class') : article.className = 'rotate'; break;
+                case 'Zoom': (article.className == 'zoom') ? article.removeAttribute('class') : article.className = 'zoom'; break;
+            }
+        }
+
+        function returnValue() {
+            for (var i = 0; i < buttons.length; i++)
+                if (buttons[i].className == 'selected')
+                    var str = buttons[i].innerHTML.toLowerCase();
+            if (str) article.className = str;
+            else article.removeAttribute('class');
+        }
+
+        function resetViewport() {
+            target.position.x = target.position.y = 0;
+            target.rotation.x = -20;
+            target.rotation.y = -45;
+            target.zoom = 100;
+        }
+
+        var stats = new Stats();
+
+        // align top-left
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.top = '0px';
+
+        document.body.appendChild( stats.domElement );
+
+        (function animate() {
+            transform.position.x += (target.position.x - transform.position.x) * 0.2;
+            transform.position.y += (target.position.y - transform.position.y) * 0.2;
+            transform.rotation.x += (target.rotation.x - transform.rotation.x) * 0.1;
+            transform.rotation.y += (target.rotation.y - transform.rotation.y) * 0.1;
+            transform.zoom += (target.zoom - transform.zoom) * 0.1;
+
+            transform.position.x = parseFloat(transform.position.x.toFixed(2));
+            transform.position.y = parseFloat(transform.position.y.toFixed(2));
+            transform.rotation.x = parseFloat(transform.rotation.x.toFixed(2));
+            transform.rotation.y = parseFloat(transform.rotation.y.toFixed(2));
+            transform.zoom = parseFloat(transform.zoom.toFixed(2));
+
+            perspective.style.transform =
+                    perspective.style.msTransform =
+                            perspective.style.mozTransform =
+                                    perspective.style.webkitTransform = 'translate(' + transform.position.x + 'px, ' + transform.position.y + 'px) rotateX(' + transform.rotation.x + 'deg) rotateY(' + transform.rotation.y + 'deg) scale3d(' + transform.zoom / 100 + ', ' + transform.zoom / 100 + ', ' + transform.zoom / 100 + ')';
+            requestAnimationFrame(animate);
+
+            stats.update();
+        })();
+
+        /* -------------------------------- */
+        /* -------- Graph Plotting -------- */
+        /* -------------------------------- */
+
+
+        var graph = $('#graph')[0];
+
+        var svgD = $('#axis')[0];
+
+//        var randomDraw = 0;
+
+        for (var x = -10; x <= 10; x++) {
+//            if (randomDraw++ % 2 == 0) break;
+
+            for (var y = -10; y <= 10; y++) {
+                var z = Math.pow(x, 2) + Math.pow(y, 2);
+                var point = document.createElement('figure');
+                point.className = 'point';
+                point.innerHTML = '<div class="front"></div><div class="back"></div><div class="left"></div><div class="right"></div><div class="top"></div><div class="bottom"></div>';
+                // point.style.transform =
+                // point.style.msTransform =
+                // point.style.mozTransform =
+                point.style.webkitTransform = 'translate3d('+(x*25)+'px,'+(y*25)+'px, 60px)';
+                graph.appendChild(point);
+
+                var projection = document.createElement('figure');
+                projection.className = 'projLine';
+                // projection.id = 'Z';
+                // projection.style.height = '60px';
+
+                projection.innerHTML = '<div class="front"></div><div class="back"></div><div class="left"></div><div class="right"></div><div class="top"></div><div class="bottom"></div>';
+                projection.style.webkitTransform = 'translate3d('+(x*25)+'px,'+(y*25)+'px, 0px)';
+                svgD.appendChild(projection);
+                // projection.attr('stroke', 'blue');
+            }
+        }
+
+    </script>
+</body>
+</html>

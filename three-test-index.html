@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>A stupendous amount of confetti</title>
+
+      <link rel="stylesheet" type="text/css" href="stylesheets/threeStylesheet.css">
+    
+  </head>
+
+  <body>
+
+    <div id="container"></div>
+
+    <script type="x-shader/x-vertex" id="vertexShader">
+        // delay and duration are used to calculate animation progress (0-1) for each vertex
+        attribute vec2 aAnimation;
+        // movement delta
+        attribute vec3 aTranslation;
+        // first control point for cubic bezier path
+        attribute vec3 aControlPoint0;
+        // second control point for cubic bezier path
+        attribute vec3 aControlPoint1;
+        // arbitrary normalized axis (x, y, z) and rotation (w) for quaternian rotation
+        attribute vec4 aAxisAngle;
+        // front vertex color
+        attribute vec3 aFrontColor;
+        // back vertex color
+        attribute vec3 aBackColor;
+
+        // time passed from the cpu
+        uniform float uTime;
+
+        varying vec3 vFrontColor;
+        varying vec3 vBackColor;
+
+        vec3 rotateVector(vec4 q, vec3 v)
+        {
+            return v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v);
+        }
+
+        vec4 quatFromAxisAngle(vec3 axis, float angle)
+        {
+            float halfAngle = angle * 0.5;
+
+            return vec4(axis.xyz * sin(halfAngle), cos(halfAngle));
+        }
+
+        vec3 cubicBezier(vec3 p0, vec3 p1, vec3 c0, vec3 c1, float t)
+        {
+            vec3 tp;
+            float tn = 1.0 - t;
+
+            tp.xyz = tn * tn * tn * p0.xyz + 3.0 * tn * tn * t * c0.xyz + 3.0 * tn * t * t * c1.xyz + t * t * t * p1.xyz;
+
+            return tp;
+        }
+
+        // t = time, b = begin value, c = change in value, d = duration
+        float easeOutCubic(float t, float b, float c, float d) {
+            return c * ((t = t / d - 1.0) * t * t + 1.0) + b;
+        }
+        float easeOutQuart(float t, float b, float c, float d) {
+            return -c * ((t = t / d - 1.0) * t * t * t - 1.0) + b;
+        }
+        float easeOutQuint(float t, float b, float c, float d) {
+            return c * ((t = t / d - 1.0) * t * t * t * t + 1.0) + b;
+        }
+
+        void main()
+        {
+            // determine progress based on time, duration and delay
+            float tDelay = aAnimation.x;
+            float tDuration = aAnimation.y;
+            float tTime = clamp(uTime - tDelay, 0.0, tDuration);
+            float tProgress = easeOutQuart(tTime, 0.0, 1.0, tDuration);
+
+            vec3 tPosition = position;
+            vec4 tQuat = quatFromAxisAngle(aAxisAngle.xyz, aAxisAngle.w * tProgress);
+
+            // calculate rotation (before translation)
+            tPosition = rotateVector(tQuat, tPosition);
+
+            // calculate position on bezier curve
+            vec3 tp0 = tPosition;
+            vec3 tp1 = tPosition + aTranslation;
+            vec3 tc0 = tPosition + aControlPoint0;
+            vec3 tc1 = tPosition + aControlPoint1;
+            tPosition = cubicBezier(tp0, tp1, tc0, tc1, tProgress);
+
+            // pass colors to fragment shader
+            vFrontColor = aFrontColor;
+            vBackColor = aBackColor;
+
+            // determine screen position
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(tPosition, 1.0);
+        }
+    </script>
+
+    <script type="x-shader/x-fragment" id="fragmentShader">
+        varying vec3 vFrontColor;
+        varying vec3 vBackColor;
+
+        void main()
+        {
+            if (gl_FrontFacing)
+            {
+                gl_FragColor = vec4(vFrontColor, 1.0);
+            }
+            else
+            {
+                gl_FragColor = vec4(vBackColor, 1.0);
+            }
+
+        }
+    </script>
+    <script src='javascripts/three.min.js'></script>
+    <script src='javascripts/OrbitControls.js'></script>
+
+    <script src="javascripts/Detector.js"></script>
+    <script src="javascripts/stats.min.js"></script>
+    <script src="javascripts/three-test-index.js"></script>
+    
+  </body>
+</html>

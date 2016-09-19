@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<title>Home | A Visualization System Prototype of Security Monitoring Product</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="stylesheet" type="text/css" href='./stylesheets/bootstrap.min.css'>
+	<link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+</head>
+<body id='table'>
+<div class='container'>
+	<div class="col-sm-12 col-md-12">
+		<h1>An Integrated Version of Security Monitor Vis System</h1>
+		<p></p>
+	</div>
+</div>
+
+<br>
+
+<div class='container'>
+	<div class="col-sm-12 col-md-12">
+		<h3>SENSOR PART</h3>
+	</div>
+	<div class="col-sm-12 col-md-4">
+		<div class="panel panel-card people-panel">
+			<div class="panel-title">
+				<h5 class="no-margin m-b">People</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-moni-text" style="height:250px;">
+					<h1>{{people_count}}</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class='col-sm-12 col-md-8'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor Memory Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-mem-area-d3" style="height:270px;"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class='col-sm-12 col-md-8'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor Docker Issues Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div class='col-xm-2 col-sm-2 col-md-2 panel-checkbox hidden-xs hidden-sm'>
+					<p>限选5个：</p>
+					<form id='checkbox_opt'>
+						<input id="issue1" class="scatter_checkbox" type="checkbox" name="issue1" value="1" v-on="click:checkOpt" checked="true"/><text> Issue 1</text><br>
+						<input id="issue2" class="scatter_checkbox" type="checkbox" name="issue2" value="2" v-on="click:checkOpt" checked="true"/><text> Issue 2</text><br>
+						<input id="issue3" class="scatter_checkbox" type="checkbox" name="issue3" value="3" v-on="click:checkOpt"/><text> Issue 3</text><br>
+						<input id="issue4" class="scatter_checkbox" type="checkbox" name="issue4" value="4" v-on="click:checkOpt" checked="true"/><text> Issue 4</text><br>
+						<input id="issue5" class="scatter_checkbox" type="checkbox" name="issue5" value="5" v-on="click:checkOpt" checked="true"/><text> Issue 5</text><br>
+						<input id="issue6" class="scatter_checkbox" type="checkbox" name="issue6" value="6" v-on="click:checkOpt"/><text> Issue 6</text><br>
+						<input id="issue7" class="scatter_checkbox" type="checkbox" name="issue7" value="7" v-on="click:checkOpt"/><text> Issue 7</text><br>
+						<input id="issue8" class="scatter_checkbox" type="checkbox" name="issue8" value="8" v-on="click:checkOpt"/><text> Issue 8</text><br>
+						<input id="issue9" class="scatter_checkbox" type="checkbox" name="issue9" value="9" v-on="click:checkOpt" checked="true"/><text> Issue 9</text><br>
+						<input id="issue10" class="scatter_checkbox" type="checkbox" name="issue10" value="10" v-on="click:checkOpt"/><text> Issue10</text><br>
+						<input id="issue11" class="scatter_checkbox" type="checkbox" name="issue11" value="11" v-on="click:checkOpt"/><text> Issue11</text><br>
+						<input id="issue12" class="scatter_checkbox" type="checkbox" name="issue12" value="12" v-on="click:checkOpt"/><text> Issue12</text><br>
+						<input id="issue13" class="scatter_checkbox" type="checkbox" name="issue13" value="13" v-on="click:checkOpt"/><text> Issue13</text><br>
+						<input id="issue14" class="scatter_checkbox" type="checkbox" name="issue14" value="14" v-on="click:checkOpt"/><text> Issue14</text><br>
+						<input id="issue15" class="scatter_checkbox" type="checkbox" name="issue15" value="15" v-on="click:checkOpt"/><text> Issue15</text><br>
+					</form>
+				</div>
+
+				<div class='panel-checkbox-xs visible-xs-block visible-sm-block'>
+					<p>限选5个：</p>
+					<form id='checkbox_opt'>
+						<input id="issue1" class="scatter_checkbox" type="checkbox" name="issue1" value="1" v-on="click:checkOpt" checked="true"/><text> Issue 1</text>
+						<input id="issue2" class="scatter_checkbox" type="checkbox" name="issue2" value="2" v-on="click:checkOpt" checked="true"/><text> Issue 2</text>
+						<input id="issue3" class="scatter_checkbox" type="checkbox" name="issue3" value="3" v-on="click:checkOpt"/><text> Issue 3</text>
+						<input id="issue4" class="scatter_checkbox" type="checkbox" name="issue4" value="4" v-on="click:checkOpt" checked="true"/><text> Issue 4</text>
+						<input id="issue5" class="scatter_checkbox" type="checkbox" name="issue5" value="5" v-on="click:checkOpt" checked="true"/><text> Issue 5</text>
+						<input id="issue6" class="scatter_checkbox" type="checkbox" name="issue6" value="6" v-on="click:checkOpt"/><text> Issue 6</text>
+						<input id="issue7" class="scatter_checkbox" type="checkbox" name="issue7" value="7" v-on="click:checkOpt"/><text> Issue 7</text>
+						<input id="issue8" class="scatter_checkbox" type="checkbox" name="issue8" value="8" v-on="click:checkOpt"/><text> Issue 8</text>
+						<input id="issue9" class="scatter_checkbox" type="checkbox" name="issue9" value="9" v-on="click:checkOpt" checked="true"/><text> Issue 9</text>
+						<input id="issue10" class="scatter_checkbox" type="checkbox" name="issue10" value="10" v-on="click:checkOpt"/><text> Issue10</text>
+						<input id="issue11" class="scatter_checkbox" type="checkbox" name="issue11" value="11" v-on="click:checkOpt"/><text> Issue11</text>
+						<input id="issue12" class="scatter_checkbox" type="checkbox" name="issue12" value="12" v-on="click:checkOpt"/><text> Issue12</text>
+						<input id="issue13" class="scatter_checkbox" type="checkbox" name="issue13" value="13" v-on="click:checkOpt"/><text> Issue13</text>
+						<input id="issue14" class="scatter_checkbox" type="checkbox" name="issue14" value="14" v-on="click:checkOpt"/><text> Issue14</text>
+						<input id="issue15" class="scatter_checkbox" type="checkbox" name="issue15" value="15" v-on="click:checkOpt"/><text> Issue15</text>
+					</form>
+				</div>
+
+				<div class='col-xm-12 col-sm-12 col-md-10 col-xs-12'>
+					<div id="sensor-docker-scatterplot-d3" style="width:100%;height:370px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class='col-sm-12 col-md-4' >
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor CPU Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-cpu-donut-d3" style='height:370px;'></div>
+			</div>
+		</div>
+	</div>
+
+	<div class='col-sm-12 col-md-6'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor Network Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-net-area-d3" style="height:280px;"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class='col-sm-12 col-md-6'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor Disk IO Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-disk-multi-d3" style="height:280px;"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class='col-sm-12 col-md-4'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Single Sensor People Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-moni-arcpie-d3" style="height:247px;"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class='col-sm-12 col-md-8'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor: People Distance and Duration Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-dis-dur-timeline-d3" style="height:247px;"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class='col-sm-12 col-md-6'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor Detection Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-detec-aster-d3" style="height:300px;"></div>
+			</div>
+		</div>
+	</div>
+	<div class='col-sm-12 col-md-6'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor Latency Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-detec-aster2-d3" style="height:300px;"></div>
+			</div>
+		</div>
+	</div>
+	<div class='col-sm-12 col-md-12'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor People Counting Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="sensor-count-multi-d3" style="height:400px;"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class='container'>
+	<div class="col-sm-12 col-md-12">
+		<h3>DOCKER PART</h3>
+	</div>
+
+	<div class='col-sm-12 col-md-4'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Docker CPU Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="docker-cpu-rect-d3" style="height:280px;"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class='col-sm-12 col-md-8'>
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'>Sensor Memory Monitor</h5>
+			</div>
+			<div class="panel-body">
+				<div id="docker-mem-area-d3" style="height:280px;"></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class='container'>
+	<div class="col-sm-12 col-md-12">
+		<h3>EXPERIMENT LAB</h3>
+	</div>
+	<div class="col-sm-12 col-md-12">
+		<div class="panel panel-card">
+			<div class='panel-title'>
+				<h5 class='no-margin m-b'></h5>
+			</div>
+			<div class="panel-body">
+				<p><a href="three-test-cubes.html">Three Cubes Test</a> Use mesh to test cube's display in Three.js.</p>
+				<p><a href="three-test-texture.html">Three Texture Test</a> Use a map picture to test the effect of Three.js texture, combined with texture both on ground and particleSystem.</p>
+				<p><a href="three-test-index.html">Three Particles and Index Test</a> Simulate lots of particles to test the data updating and animation styles in Three.js.</p>
+				<p><a href="css3d-test-people.html">CSS 3D People Monitor Test</a> Use pure CSS 3D Stylesheets and JavaScript to simulate the 3D space (such as webgl tech) effect.</p>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class='container'>
+	<div class="col-sm-12 col-md-12">
+		<h3>COMMENTS</h3>
+	</div>
+	<div class="col-sm-12 col-md-12">
+		<div class="panel panel-card">
+			<div class="panel-title">
+				<h5 class='no-margin m-b'></h5>
+			</div>
+			<div class="panel-body">
+				<div class="ds-thread" data-thread-key="ss-vis-component" data-url="http://hijiangtao.github.io/ss-vis-component" data-title="Home | A Visualization System Prototype of Security Monitoring Product" ></div>
+				<script type="text/javascript">
+				var duoshuoQuery = {short_name:"datablog"};
+					(function() {
+						var ds = document.createElement('script');
+						ds.type = 'text/javascript';ds.async = true;
+						ds.src = 'http://static.duoshuo.com/embed.js';
+						ds.charset = 'UTF-8';
+						(document.getElementsByTagName('head')[0]
+						|| document.getElementsByTagName('body')[0]).appendChild(ds);
+					})();
+				</script>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class='container'>
+	<div class="col-sm-12 col-md-12">
+		<hr style='border: 1px solid white'>
+		<footer>
+			<p>
+				<a href="http://hijiangtao.github.io/">hijiangtao</a> | <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1000257487'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s96.cnzz.com/z_stat.php%3Fid%3D1000257487' type='text/javascript'%3E%3C/script%3E"));</script>
+			</p>
+		</footer>
+	</div>
+</div>
+
+<script src='./javascripts/d3.v3.min.js'></script>
+<script src='./javascripts/jquery.min.js'></script>
+<script src='./javascripts/bootstrap.min.js'></script>
+<script src='./javascripts/vue.min.js'></script>
+
+<script src='./javascripts/integrateIndex.js'></script>
+<!--<script src='./javascripts/experimentIndex.js'></script>-->
+</body>
+</html>
