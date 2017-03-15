@@ -7,6 +7,23 @@ This is a demo project of my work about how to visualize charts with pure d3. Cu
 
 Each type of chart include `generate` and `redraw` methods, all 11 types of charts are defined in `methods` of Vue defining part. I will extract them out and then explain them briefly if someone are interested in this work.
  
+## Component Methods
+
+### Sensor Memory Monitor (Single Area Chart)
+### Sensor Docker Issues Monitor (Selectable Scatter Plot)
+### Sensor CPU Monitor (Emphasized Pie Chart)
+### Sensor Network Monitor (Multi-Object Area Chart)
+### Sensor Disk IO Monitor (Line-Area Mixed Chart)
+### Single Sensor People Monitor (2D Scatter Map)
+### Sensor: People Distance and Duration Monitor (Emphasized Line Chart)
+### Sensor Detection Monitor (Aster Plot)
+### Sensor People Counting Monitor (Grouped Line-Bar Mixed Chart)
+### Docker CPU Monitor (Rectangle Indicator)
+### Three Cubes
+### Three Texture Test
+### Three Particles and Index Test
+### CSS 3D People Monitor Test
+
 ## DEMO
 
 Here are some pictures of the running cases, includes both visualization cards, charts and customized monitor map. See more examples at [here](https://hijiangtao.github.io/ss-vis-component/).
