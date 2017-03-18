@@ -10,7 +10,17 @@ Each type of chart include `generate` and `redraw` methods, all 11 types of char
 ## Component Methods
 
 ### Sensor Memory Monitor (Single Area Chart)
+
+```
+function displayMem()
+```
+
 ### Sensor Docker Issues Monitor (Selectable Scatter Plot)
+
+```
+function displayDocker()
+```
+
 ### Sensor CPU Monitor (Emphasized Pie Chart)
 ### Sensor Network Monitor (Multi-Object Area Chart)
 ### Sensor Disk IO Monitor (Line-Area Mixed Chart)
