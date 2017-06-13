@@ -1,5 +1,5 @@
 # ss-vis-component
-VIS components for a security system, to monitor the state and confirm the system's health running.
+VIS components for a security system, to monitor the state and confirm the system's health running. All codes were wrote based on `D3.js version 3.x`.
 
 ## Introduction
 
