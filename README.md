@@ -11,6 +11,8 @@ Each type of chart include `generate` and `redraw` methods, all 11 types of char
 
 ### Sensor Memory Monitor (Single Area Chart)
 
+For example, you can find the function below in the file can use it to create a new instance.
+
 ```
 function displayMem()
 ```
